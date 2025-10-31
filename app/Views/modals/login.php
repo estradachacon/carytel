@@ -7,7 +7,7 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
-                <form id="loginForm" action="<?= base_url('auth/login') ?>" method="POST">
+                <form id="loginForm" action="<?= base_url('/login') ?>" method="POST">
                     <?= csrf_field() ?>
                     
                     <!-- Email/Usuario -->
