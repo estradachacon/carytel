@@ -188,7 +188,7 @@
 
 
         <div class="container-fluid">
-            <a class="navbar-brand text-md-center" href="https://suplidoresdiversos.tec101cloud.net/dashboard">FC
+            <a class="navbar-brand text-md-center" href="#/dashboard">FC
                 Encomiendas</a>
             <button class="btn btn-link btn-sm mr-auto" id="sidebarToggle" href="#">
                 <div class="lines">
@@ -203,14 +203,13 @@
                     <a class="nav-link dropdown-toggle" id="userDropdown" href="#" role="button" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">Casa Matriz</a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-                        <a class="dropdown-item selected disabled"
-                            href="https://suplidoresdiversos.tec101cloud.net/change-company/1">
+                        <a class="dropdown-item selected disabled" href="#/change-company/1">
                             Casa Matriz</a>
-                        <a class="dropdown-item " href="https://suplidoresdiversos.tec101cloud.net/change-company/15">
+                        <a class="dropdown-item " href="#/change-company/15">
                             BODEGA MEJICANOS</a>
-                        <a class="dropdown-item " href="https://suplidoresdiversos.tec101cloud.net/change-company/16">
+                        <a class="dropdown-item " href="#/change-company/16">
                             SANTORINI</a>
-                        <a class="dropdown-item " href="https://suplidoresdiversos.tec101cloud.net/change-company/17">
+                        <a class="dropdown-item " href="#/change-company/17">
                             COL. MEDICA</a>
                     </div>
                 </li>
@@ -221,27 +220,22 @@
                     <a class="nav-link dropdown-toggle" id="userDropdown" href="#" role="button" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false"><i class="fa-solid fa-user"></i> Ricardo Fernandez
 
-                        <img src="upload/profile/logo.jpg"
-                            alt="user-image" height="42" class="rounded-circle shadow-sm">
+                        <img src="upload/profile/user.jpg" alt="user-image" height="42"
+                            class="rounded-circle shadow-sm">
                     </a>
 
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-                        <a class="dropdown-item" href="https://suplidoresdiversos.tec101cloud.net/profile"><i
-                                class="fa-regular fa-user"></i>
+                        <a class="dropdown-item" href="#/profile"><i class="fa-regular fa-user"></i>
                             Mi perfil</a>
-                        <a class="dropdown-item" href="https://suplidoresdiversos.tec101cloud.net/profile/edit"><i
-                                class="fa-solid fa-gear"></i>
+                        <a class="dropdown-item" href="#/profile/edit"><i class="fa-solid fa-gear"></i>
                             Configuración de perfil</a>
-                        <a class="dropdown-item"
-                            href="https://suplidoresdiversos.tec101cloud.net/profile/change_password"><i
-                                class="fa-solid fa-key"></i> Cambiar la contraseña</a>
+                        <a class="dropdown-item" href="#/profile/change_password"><i class="fa-solid fa-key"></i>
+                            Cambiar la contraseña</a>
 
-                        <a class="dropdown-item"
-                            href="https://suplidoresdiversos.tec101cloud.net/admin/administration/general_settings"><i
+                        <a class="dropdown-item" href="#/admin/administration/general_settings"><i
                                 class="fa-solid fa-layer-group"></i> Ajustes del sistema</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="https://suplidoresdiversos.tec101cloud.net/logout"><i
-                                class="fa-solid fa-power-off"></i>
+                        <a class="dropdown-item" href="#/logout"><i class="fa-solid fa-power-off"></i>
                             Cerrar sesión</a>
                     </div>
                 </li>
@@ -262,8 +256,7 @@
                     </div>
                     <a href="javascript: void(0);">
 
-                        <img class="logo" src="https://suplidoresdiversos.tec101cloud.net/public/uploads/media/logo.jpg"
-                            alt="logo-company" height="60" class="shadow-sm">
+                        <img class="logo" src="img/logo.jpg" alt="logo-company" height="60" class="shadow-sm">
                         <span class="sidebar-user-name">Casa Matriz</span>
                     </a>
                 </div>
@@ -277,268 +270,56 @@
                             Menú General
                         </a>
 
-                        <a class="nav-link" href="#">
-                            <div class="sb-nav-link-icon"><i class="fa-solid fa-user"></i></div>
-                            Vendedores
-                        </a>
-                        
-                        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#inventories"
-                            aria-expanded="false" aria-controls="collapseLayouts">
-                            <div class="sb-nav-link-icon"><i class="ti-shopping-cart"></i></div>
-                            Inventarios
-                            <div class="sb-sidenav-collapse-arrow"><i class="fa-solid fa-angle-down"></i></div>
-                        </a>
-                        <div class="collapse" id="inventories" aria-labelledby="headingOne"
-                            data-parent="#sidenavAccordion">
-                            <nav class="sb-sidenav-menu-nested nav" id="navAccordionInventories">
-
-                                <a class="nav-link"
-                                    href="https://suplidoresdiversos.tec101cloud.net/products">Productos</a>
-                                <a class="nav-link"
-                                    href="https://suplidoresdiversos.tec101cloud.net/contact_prices">Precios para
-                                    Clientes</a>
-                                <a class="nav-link"
-                                    href="https://suplidoresdiversos.tec101cloud.net/movements">Movimientos de
-                                    Inventario</a>
-                                <a class="nav-link"
-                                    href="https://suplidoresdiversos.tec101cloud.net/movements_type">Tipo de
-                                    Movimiento</a>
-                                <a class="nav-link"
-                                    href="https://suplidoresdiversos.tec101cloud.net/inventory_adjustments/create">Ajuste
-                                    de Inventario</a>
-                                <a class="nav-link"
-                                    href="https://suplidoresdiversos.tec101cloud.net/inventory_adjustments_fp/create">Ajuste
-                                    por Compras</a>
-
-                                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#maintenance"
-                                    aria-expanded="false" aria-controls="collapseLayouts">
-                                    <div class="sb-nav-link-icon"><i class="ti-settings"></i></div>
-                                    Mantenimientos
-                                    <div class="sb-sidenav-collapse-arrow"><i class="fa-solid fa-angle-down"></i></div>
-                                </a>
-                                <div class="collapse" id="maintenance" aria-labelledby="headingOne"
-                                    data-parent="#navAccordionInventories">
-                                    <nav class="sb-sidenav-menu-nested nav">
-                                        <a class="nav-link"
-                                            href="https://suplidoresdiversos.tec101cloud.net/kits">Kits</a>
-                                        <a class="nav-link"
-                                            href="https://suplidoresdiversos.tec101cloud.net/categories">Categorias</a>
-                                        <a class="nav-link"
-                                            href="https://suplidoresdiversos.tec101cloud.net/brands">Marcas</a>
-                                        <a class="nav-link"
-                                            href="https://suplidoresdiversos.tec101cloud.net/codigo_arancelarios">Códigos
-                                            arancelarios</a>
-                                        <a class="nav-link"
-                                            href="https://suplidoresdiversos.tec101cloud.net/product_units">Unidad de
-                                            producto</a>
-                                        <a class="nav-link"
-                                            href="https://suplidoresdiversos.tec101cloud.net/product_group">Grupos de
-                                            producto</a>
-                                        <a class="nav-link"
-                                            href="https://suplidoresdiversos.tec101cloud.net/product_lines">Líneas de
-                                            Productos</a>
-                                        <a class="nav-link"
-                                            href="https://suplidoresdiversos.tec101cloud.net/product_subtypes">SubTipo
-                                            de Productos</a>
-                                        <a class="nav-link"
-                                            href="https://suplidoresdiversos.tec101cloud.net/product_subsubtypes">Sub
-                                            SubTipo de Productos</a>
-                                        <a class="nav-link"
-                                            href="https://suplidoresdiversos.tec101cloud.net/companies">Bodegas/Sucursales</a>
-                                    </nav>
-                                </div>
-                                <a class="nav-link collapsed" href="#" data-toggle="collapse"
-                                    data-target="#tranfer-items" aria-expanded="false" aria-controls="collapseLayouts">
-                                    <div class="sb-nav-link-icon"><i class="ti-exchange-vertical"></i></div>
-                                    Transferencias
-                                    <div class="sb-sidenav-collapse-arrow"><i class="fa-solid fa-angle-down"></i></div>
-                                </a>
-                                <div class="collapse" id="tranfer-items" aria-labelledby="headingOne"
-                                    data-parent="#navAccordionInventories">
-                                    <nav class="sb-sidenav-menu-nested nav">
-                                        <a class="nav-link"
-                                            href="https://suplidoresdiversos.tec101cloud.net/passes/create">Añadir
-                                            nueva</a>
-                                        <a class="nav-link"
-                                            href="https://suplidoresdiversos.tec101cloud.net/transfer-list/1">Transferencias</a>
-                                        <a class="nav-link"
-                                            href="https://suplidoresdiversos.tec101cloud.net/transfer_receive/0">Transferencias
-                                            recibidas</a>
-                                    </nav>
-                                </div>
-
-
-                            </nav>
-                        </div>
-
-                        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#suppliers"
-                            aria-expanded="false" aria-controls="collapseLayouts">
-                            <div class="sb-nav-link-icon"><i class="ti-truck"></i></div>
-                            Proveedor
-                            <div class="sb-sidenav-collapse-arrow"><i class="fa-solid fa-angle-down"></i></div>
-                        </a>
-                        <div class="collapse" id="suppliers" aria-labelledby="headingOne"
-                            data-parent="#sidenavAccordion">
-                            <nav class="sb-sidenav-menu-nested nav">
-                                <a class="nav-link" href="https://suplidoresdiversos.tec101cloud.net/suppliers">Lista de
-                                    proveedores</a>
-                                <a class="nav-link"
-                                    href="https://suplidoresdiversos.tec101cloud.net/suppliers/create">Añadir nueva</a>
-                            </nav>
-                        </div>
-
-                        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#purchase_orders"
-                            aria-expanded="false" aria-controls="collapseLayouts">
-                            <div class="sb-nav-link-icon"><i class="ti-bag"></i></div>
-                            Compra
-                            <div class="sb-sidenav-collapse-arrow"><i class="fa-solid fa-angle-down"></i></div>
-                        </a>
-                        <div class="collapse" id="purchase_orders" aria-labelledby="headingOne"
-                            data-parent="#sidenavAccordion">
-                            <nav class="sb-sidenav-menu-nested nav">
-                                <a class="nav-link"
-                                    href="https://suplidoresdiversos.tec101cloud.net/purchase_orders">Ordenes de
-                                    compra</a>
-                                <a class="nav-link"
-                                    href="https://suplidoresdiversos.tec101cloud.net/purchase_orders/create">Nueva orden
-                                    de compra</a>
-                                <a class="nav-link"
-                                    href="https://suplidoresdiversos.tec101cloud.net/purchase_returns">Devolución de
-                                    compra</a>
-                            </nav>
-                        </div>
-
-                        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#sales"
-                            aria-expanded="false" aria-controls="collapseLayouts">
-                            <div class="sb-nav-link-icon"><i class="ti-shopping-cart-full"></i></div>
-                            Ventas
-                            <div class="sb-sidenav-collapse-arrow"><i class="fa-solid fa-angle-down"></i></div>
-                        </a>
-                        <div class="collapse" id="sales" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
-                            <nav class="sb-sidenav-menu-nested nav">
-                                <a class="nav-link"
-                                    href="https://suplidoresdiversos.tec101cloud.net/invoices/create">Crear factura</a>
-                                <a class="nav-link" href="https://suplidoresdiversos.tec101cloud.net/invoices">Lista de
-                                    facturas</a>
-
-                                <a class="nav-link"
-                                    href="https://suplidoresdiversos.tec101cloud.net/sales_returns">Devolución de
-                                    ventas</a>
-
-                                <a class="nav-link" href="https://suplidoresdiversos.tec101cloud.net/tpn_control">Venta
-                                    TPN</a>
-                                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#order_type"
-                                    aria-expanded="false" aria-controls="collapseLayouts">
-                                    <div class="sb-nav-link-icon"><i class="ti-bookmark"></i></div>
-                                    Notas de pedido
-                                    <div class="sb-sidenav-collapse-arrow"><i class="ti-angle-down"></i></div>
-                                </a>
-                                <div class="collapse" id="order_type" aria-labelledby="headingOne"
-                                    data-parent="#navAccordionTreasury">
-                                    <nav class="sb-sidenav-menu-nested nav">
-                                        <a class="nav-link"
-                                            href="https://suplidoresdiversos.tec101cloud.net/private_order_notes">Venta
-                                            Privada</a>
-                                    </nav>
-                                </div>
-
-                                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#type_sales"
-                                    aria-expanded="false" aria-controls="collapseLayouts">
-                                    <div class="sb-nav-link-icon"><i class="ti-bookmark"></i></div>
-                                    Tipos de ventas
-                                    <div class="sb-sidenav-collapse-arrow"><i class="ti-angle-down"></i></div>
-                                </a>
-                                <div class="collapse" id="type_sales" aria-labelledby="headingOne"
-                                    data-parent="#navAccordionTreasury">
-                                    <nav class="sb-sidenav-menu-nested nav">
-                                        <a class="nav-link"
-                                            href="https://suplidoresdiversos.tec101cloud.net/private_sales_subtype">Privadas</a>
-                                        <a class="nav-link"
-                                            href="https://suplidoresdiversos.tec101cloud.net/institutional_sales_subtype">Institucionales</a>
-                                    </nav>
-                                </div>
-                            </nav>
-
-                        </div>
-
                         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#cash"
                             aria-expanded="false" aria-controls="collapseLayouts">
-                            <div class="sb-nav-link-icon"><i class="ti-package"></i></div>
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-cash-register"></i></div>
                             Cajas
                             <div class="sb-sidenav-collapse-arrow"><i class="fa-solid fa-angle-down"></i></div>
                         </a>
                         <div class="collapse" id="cash" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
                             <nav class="sb-sidenav-menu-nested nav">
-                                <a class="nav-link" href="https://suplidoresdiversos.tec101cloud.net/cash">Creación de
+                                <a class="nav-link" href="#/cash">Lista de Cajas</a>
+                                <a class="nav-link" href="#/cash">Creación de
                                     caja</a>
-                                <a class="nav-link"
-                                    href="https://suplidoresdiversos.tec101cloud.net/cash_movement/create?cashmov_type=Closing">Corte
+                                <a class="nav-link" href="#/cash_movement">Movimientos de
+                                    caja</a>
+                                <a class="nav-link" href="#/cash_movement/create?cashmov_type=Closing">Corte
                                     de caja</a>
-                                <a class="nav-link"
-                                    href="https://suplidoresdiversos.tec101cloud.net/cash_movement">Movimientos de
-                                    caja</a>
                             </nav>
                         </div>
 
+                        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#sales"
+                            aria-expanded="false" aria-controls="collapseLayouts">
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-box-open"></i></div>
+                            Paquetería
+                            <div class="sb-sidenav-collapse-arrow"><i class="fa-solid fa-angle-down"></i></div>
+                        </a>
+                        <div class="collapse" id="sales" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
+                            <nav class="sb-sidenav-menu-nested nav">
+                                <a class="nav-link" href="#/invoices/create">Registrar paquete</a>
+                                <a class="nav-link" href="#/invoices">Lista de
+                                    paquetes</a>
 
-
-
+                                <a class="nav-link" href="#/sales_returns">Devolución de
+                                    No retirados</a>
+                            </nav>
+                        </div>
 
                         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#treasury"
                             aria-expanded="false" aria-controls="collapseLayouts">
-                            <div class="sb-nav-link-icon"><i class="ti-server"></i></div>
-                            Tesorería
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-wallet"></i></div>
+                            Remuneraciones
                             <div class="sb-sidenav-collapse-arrow"><i class="fa-solid fa-angle-down"></i></div>
                         </a>
                         <div class="collapse" id="treasury" aria-labelledby="headingOne"
                             data-parent="#sidenavAccordion">
                             <nav class="sb-sidenav-menu-nested nav" id="navAccordionTreasury">
-                                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#accounts"
-                                    aria-expanded="false" aria-controls="collapseLayouts">
-                                    <div class="sb-nav-link-icon"><i class="ti-credit-card"></i></div>
-                                    Cuentas
-                                    <div class="sb-sidenav-collapse-arrow"><i class="fa-solid fa-angle-down"></i></div>
-                                </a>
-                                <div class="collapse" id="accounts" aria-labelledby="headingOne"
-                                    data-parent="#navAccordionTreasury">
-                                    <nav class="sb-sidenav-menu-nested nav">
-                                        <a class="nav-link"
-                                            href="https://suplidoresdiversos.tec101cloud.net/accounts">Toda la
-                                            cuenta</a>
-                                        <a class="nav-link"
-                                            href="https://suplidoresdiversos.tec101cloud.net/accounts/create">Añadir
-                                            nueva cuenta</a>
-                                    </nav>
-                                </div>
-
-                                <a class="nav-link collapsed" href="#" data-toggle="collapse"
-                                    data-target="#transactions" aria-expanded="false" aria-controls="collapseLayouts">
-                                    <div class="sb-nav-link-icon"><i class="ti-receipt"></i></div>
-                                    Transacciones
-                                    <div class="sb-sidenav-collapse-arrow"><i class="fa-solid fa-angle-down"></i></div>
-                                </a>
-                                <div class="collapse" id="transactions" aria-labelledby="headingOne"
-                                    data-parent="#navAccordionTreasury">
-                                    <nav class="sb-sidenav-menu-nested nav">
-                                        <a class="nav-link"
-                                            href="https://suplidoresdiversos.tec101cloud.net/income">Ingreso/Depósito</a>
-                                        <a class="nav-link"
-                                            href="https://suplidoresdiversos.tec101cloud.net/expense">Gastos</a>
-                                        <a class="nav-link"
-                                            href="https://suplidoresdiversos.tec101cloud.net/transfer/create">Transferir</a>
-                                        <a class="nav-link"
-                                            href="https://suplidoresdiversos.tec101cloud.net/income/calendar">Calendario
-                                            de ingresos</a>
-                                        <a class="nav-link"
-                                            href="https://suplidoresdiversos.tec101cloud.net/expense/calendar">Calendario
-                                            de gastos</a>
-                                    </nav>
-                                </div>
-
+                                <a class="nav-link" href="#/invoices/create">Remunerar paquetes</a>
+                                <a class="nav-link" href="#/invoices/create">Movimientos de caja actual</a>
                                 <a class="nav-link collapsed" href="#" data-toggle="collapse"
                                     data-target="#recurring_transaction" aria-expanded="false"
                                     aria-controls="collapseLayouts">
-                                    <div class="sb-nav-link-icon"><i class="ti-wallet"></i></div>
+                                    <div class="sb-nav-link-icon"><i class="fa-solid fa-wallet"></i></div>
                                     Transacción recurrente
                                     <div class="sb-sidenav-collapse-arrow"><i class="fa-solid fa-angle-down"></i></div>
                                 </a>
@@ -562,183 +343,127 @@
                             </nav>
                         </div>
 
-                        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#request"
+                        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#purchase_orders"
                             aria-expanded="false" aria-controls="collapseLayouts">
-                            <div class="sb-nav-link-icon"><i class="ti-file"></i></div>
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-bag-shopping"></i></div>
+                            Otros servicios
+                            <div class="sb-sidenav-collapse-arrow"><i class="fa-solid fa-angle-down"></i></div>
+                        </a>
+                        <div class="collapse" id="purchase_orders" aria-labelledby="headingOne"
+                            data-parent="#sidenavAccordion">
+                            <nav class="sb-sidenav-menu-nested nav">
+                                <a class="nav-link" href="#/purchase_orders">Lista de gastos</a>
+                                <a class="nav-link" href="#/purchase_returns">Tipos de gastos</a>
+                            </nav>
+                        </div>
+
+                        <a class="nav-link" href="#">
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-address-book"></i></div>
+                            Vendedores
+                        </a>
+
+                        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#accounts"
+                            aria-expanded="false" aria-controls="collapseLayouts">
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-file"></i></div>
                             Solicitudes
                             <div class="sb-sidenav-collapse-arrow"><i class="fa-solid fa-angle-down"></i></div>
                         </a>
-                        <div class="collapse" id="request" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
-                            <nav class="sb-sidenav-menu-nested nav" id="navAccordionRequest">
-                                <a class="nav-link"
-                                    href="https://suplidoresdiversos.tec101cloud.net/request_order_notes">Modificación
-                                    de Notas de pedido</a>
-
-                                <a class="nav-link"
-                                    href="https://suplidoresdiversos.tec101cloud.net/request_lote_uses">Uso de Lotes</a>
-
+                        <div class="collapse" id="accounts" aria-labelledby="headingOne"
+                            data-parent="#navAccordionTreasury">
+                            <nav class="sb-sidenav-menu-nested nav">
+                                <a class="nav-link" href="#/accounts">Reversión
+                                    de pagos</a>
+                                <a class="nav-link" href="#/accounts/create">Perdonar flete</a>
                             </nav>
                         </div>
 
                         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#reports"
                             aria-expanded="false" aria-controls="collapseLayouts">
-                            <div class="sb-nav-link-icon"><i class="ti-bar-chart"></i></div>
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-file-export"></i></div>
                             Informes
                             <div class="sb-sidenav-collapse-arrow"><i class="fa-solid fa-angle-down"></i></div>
                         </a>
                         <div class="collapse" id="reports" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
                             <nav class="sb-sidenav-menu-nested nav">
-                                <a class="nav-link"
-                                    href="https://suplidoresdiversos.tec101cloud.net/reports/account_statement">Estado
+                                <a class="nav-link" href="#/reports/account_statement">Estado
                                     de cuenta</a>
-                                <a class="nav-link"
-                                    href="https://suplidoresdiversos.tec101cloud.net/reports/income_report">Informe de
+                                <a class="nav-link" href="#/reports/income_report">Informe de
                                     Ingresos</a>
-                                <a class="nav-link"
-                                    href="https://suplidoresdiversos.tec101cloud.net/reports/expense_report">Informe de
+                                <a class="nav-link" href="#/reports/expense_report">Informe de
                                     gastos</a>
-                                <a class="nav-link"
-                                    href="https://suplidoresdiversos.tec101cloud.net/reports/transfer_report">Informe de
+                                <a class="nav-link" href="#/reports/transfer_report">Informe de
                                     transferencia</a>
-                                <a class="nav-link"
-                                    href="https://suplidoresdiversos.tec101cloud.net/reports/income_vs_expense">Ingresos
+                                <a class="nav-link" href="#/reports/income_vs_expense">Ingresos
                                     VS Gastos</a>
-                                <a class="nav-link"
-                                    href="https://suplidoresdiversos.tec101cloud.net/reports/report_by_payer">Informe
+                                <a class="nav-link" href="#/reports/report_by_payer">Informe
                                     del pagador</a>
-                                <a class="nav-link"
-                                    href="https://suplidoresdiversos.tec101cloud.net/reports/report_by_payee">Informe
+                                <a class="nav-link" href="#/reports/report_by_payee">Informe
                                     por beneficiario</a>
-                                <a class="nav-link"
-                                    href="https://suplidoresdiversos.tec101cloud.net/sales_report">Informe de Ventas</a>
-                                <a class="nav-link"
-                                    href="https://suplidoresdiversos.tec101cloud.net/reports/report_dtes">Report
+                                <a class="nav-link" href="#/sales_report">Informe de Ventas</a>
+                                <a class="nav-link" href="#/reports/report_dtes">Report
                                     DTE´s</a>
                             </nav>
                         </div>
 
 
-                        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#activos"
-                            aria-expanded="false" aria-controls="collapseLayouts">
-                            <div class="sb-nav-link-icon"><i class="ti-money"></i></div>
-                            Activos
-                            <div class="sb-sidenav-collapse-arrow"><i class="fa-solid fa-angle-down"></i></div>
-                        </a>
-                        <div class="collapse" id="activos" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
-                            <nav class="sb-sidenav-menu-nested nav">
-                                <a class="nav-link"
-                                    href="https://suplidoresdiversos.tec101cloud.net/lista-activos">Lista activos</a>
-                                <a class="nav-link"
-                                    href="https://suplidoresdiversos.tec101cloud.net/activos-debaja">Activos de baja</a>
-                                <a class="nav-link"
-                                    href="https://suplidoresdiversos.tec101cloud.net/lista-mantenimiento">Mantenimiento</a>
-                                <a class="nav-link"
-                                    href="https://suplidoresdiversos.tec101cloud.net/lista-depreciaciones">Depreciaciones</a>
-                                <a class="nav-link"
-                                    href="https://suplidoresdiversos.tec101cloud.net/tpn_categories">Categorias TPN</a>
-
-                            </nav>
-                        </div>
-
-
                         <div class="sb-sidenav-menu-heading">Ajustes del sistema</div>
-                        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#departments"
-                            aria-expanded="false" aria-controls="collapseLayouts">
-                            <div class="sb-nav-link-icon"><i class="ti-layout-grid2"></i></div>
-                            Departamentos
-                            <div class="sb-sidenav-collapse-arrow"><i class="fa-solid fa-angle-down"></i></div>
-                        </a>
-                        <div class="collapse" id="departments" aria-labelledby="headingOne"
-                            data-parent="#sidenavAccordion">
-                            <nav class="sb-sidenav-menu-nested nav">
-                                <a class="nav-link"
-                                    href="https://suplidoresdiversos.tec101cloud.net/departments/create">Añadir
-                                    nueva</a>
-                                <a class="nav-link" href="https://suplidoresdiversos.tec101cloud.net/departments">Lista
-                                    de Departamentos</a>
-                            </nav>
-                        </div>
-
-                        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#job_position"
-                            aria-expanded="false" aria-controls="collapseLayouts">
-                            <div class="sb-nav-link-icon"><i class="ti-briefcase"></i></div>
-                            Puestos de Trabajo
-                            <div class="sb-sidenav-collapse-arrow"><i class="fa-solid fa-angle-down"></i></div>
-                        </a>
-                        <div class="collapse" id="job_position" aria-labelledby="headingOne"
-                            data-parent="#sidenavAccordion">
-                            <nav class="sb-sidenav-menu-nested nav">
-                                <a class="nav-link"
-                                    href="https://suplidoresdiversos.tec101cloud.net/job_positions/create">Añadir
-                                    nueva</a>
-                                <a class="nav-link"
-                                    href="https://suplidoresdiversos.tec101cloud.net/job_positions">Lista de Puestos de
-                                    Trabajo</a>
-                            </nav>
-                        </div>
 
                         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#company_settings"
                             aria-expanded="false" aria-controls="collapseLayouts">
-                            <div class="sb-nav-link-icon"><i class="ti-panel"></i></div>
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-cog"></i></div>
                             Ajustes del sistema
                             <div class="sb-sidenav-collapse-arrow"><i class="fa-solid fa-angle-down"></i></div>
                         </a>
                         <div class="collapse" id="company_settings" aria-labelledby="headingOne"
                             data-parent="#sidenavAccordion">
                             <nav class="sb-sidenav-menu-nested nav">
-                                <a class="nav-link"
-                                    href="https://suplidoresdiversos.tec101cloud.net/admin/administration/general_settings">Configuración
+                                <a class="nav-link" href="#/admin/administration/general_settings">Configuración
                                     general</a>
-
-
-
+                                <a class="nav-link collapsed" href="#" data-toggle="collapse"
+                                    data-target="#transactions" aria-expanded="false" aria-controls="collapseLayouts">
+                                    <div class="sb-nav-link-icon"><i class="fa-solid fa-store"></i></div>
+                                    Sucursales
+                                    <div class="sb-sidenav-collapse-arrow"><i class="fa-solid fa-angle-down"></i></div>
+                                </a>
+                                <div class="collapse" id="transactions" aria-labelledby="headingOne"
+                                    data-parent="#navAccordionTreasury">
+                                    <nav class="sb-sidenav-menu-nested nav">
+                                        <a class="nav-link"
+                                            href="https://suplidoresdiversos.tec101cloud.net/income">Listado de
+                                            sucursales</a>
+                                        <a class="nav-link"
+                                            href="https://suplidoresdiversos.tec101cloud.net/expense">Gastos</a>
+                                        <a class="nav-link"
+                                            href="https://suplidoresdiversos.tec101cloud.net/transfer/create">Transferir</a>
+                                        <a class="nav-link"
+                                            href="https://suplidoresdiversos.tec101cloud.net/income/calendar">Calendario
+                                            de ingresos</a>
+                                        <a class="nav-link"
+                                            href="https://suplidoresdiversos.tec101cloud.net/expense/calendar">Calendario
+                                            de gastos</a>
+                                    </nav>
+                                </div>
+                                <a class="nav-link" href="#/admin/administration/general_settings">Ver
+                                    almacenamiento</a>
                             </nav>
                         </div>
 
                         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#staffs"
                             aria-expanded="false" aria-controls="collapseLayouts">
-                            <div class="sb-nav-link-icon"><i class="ti-user"></i></div>
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-users"></i></div>
                             Gestión de usuarios
                             <div class="sb-sidenav-collapse-arrow"><i class="fa-solid fa-angle-down"></i></div>
                         </a>
                         <div class="collapse" id="staffs" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
                             <nav class="sb-sidenav-menu-nested nav">
-                                <a class="nav-link" href="https://suplidoresdiversos.tec101cloud.net/admin/users">Todos
+                                <a class="nav-link" href="#/admin/users">Todos
                                     los usuarios</a>
-                                <a class="nav-link"
-                                    href="https://suplidoresdiversos.tec101cloud.net/admin/users/create">Añadir
-                                    nueva</a>
-                                <a class="nav-link" href="https://suplidoresdiversos.tec101cloud.net/roles">Roles del
+                                <a class="nav-link" href="#/roles">Roles del
                                     usuario</a>
-                                <a class="nav-link"
-                                    href="https://suplidoresdiversos.tec101cloud.net/permission/control">Control de
-                                    acceso</a>
                             </nav>
                         </div>
 
-
-
-                        <a class="nav-link collapsed" href="#" data-toggle="collapse"
-                            data-target="#transaction_settings" aria-expanded="false" aria-controls="collapseLayouts">
-                            <div class="sb-nav-link-icon"><i class="ti-credit-card"></i></div>
-                            Configuración de transacciones
-                            <div class="sb-sidenav-collapse-arrow"><i class="fa-solid fa-angle-down"></i></div>
-                        </a>
-                        <div class="collapse" id="transaction_settings" aria-labelledby="headingOne"
-                            data-parent="#sidenavAccordion">
-                            <nav class="sb-sidenav-menu-nested nav">
-                                <a class="nav-link"
-                                    href="https://suplidoresdiversos.tec101cloud.net/chart_of_accounts">Tipos de
-                                    ingresos y gastos</a>
-                                <a class="nav-link"
-                                    href="https://suplidoresdiversos.tec101cloud.net/payment_methods">Métodos de
-                                    pago</a>
-                                <a class="nav-link" href="https://suplidoresdiversos.tec101cloud.net/taxs">Configuración
-                                    de impuestos</a>
-                            </nav>
-                        </div>
-
-                        <a class="nav-link" href="https://suplidoresdiversos.tec101cloud.net/logs">
+                        <a class="nav-link" href="#/logs">
                             <div class="sb-nav-link-icon"><i class="fas fa-book"></i></div>Bitácora
                         </a>
                     </div>

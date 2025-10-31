@@ -9,6 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
     <link rel="shortcut icon" type="image/png" href="/favicon.ico">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- STYLES -->
 
@@ -107,7 +108,7 @@
             margin: 11px 0;
             overflow: visible;
             width: 40px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
         }
 
@@ -116,7 +117,7 @@
             background-color: rgba(45, 101, 138, 1);
             color: rgba(255, 255, 255, 1);
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
         header .heroe {
@@ -223,7 +224,7 @@
                 right: 0;
                 padding: 0.5rem 1rem;
                 background-color: rgba(247, 248, 249, 1);
-                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
                 z-index: 1000;
                 display: flex;
                 justify-content: space-between;
@@ -256,7 +257,7 @@
                 right: 0;
                 background-color: rgba(247, 248, 249, 0.98);
                 padding: 20px;
-                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
                 transition: all 0.3s ease-in-out;
             }
 
@@ -323,7 +324,8 @@
                 <li class="menu-item"><a href="#">Nuestras rutas</a></li>
                 <li class="menu-item"><a href="#" target="_blank">Ubicación</a></li>
                 <li class="menu-item"><a href="#" target="_blank">Quienes somos</a></li>
-                <li class="menu-item"><a href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Iniciar sesión</a></li>
+                <li class="menu-item"><a href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Iniciar sesión</a>
+                </li>
             </ul>
         </div>
         <div class="heroe bienvenida-encomiendas">
@@ -389,15 +391,15 @@
 
     <!-- SCRIPTS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     <script {csp-script-nonce}>
         // Script para el menú
         document.getElementById("menuToggle").addEventListener('click', toggleMenu);
-        
+
         function toggleMenu() {
             var menuList = document.querySelector('.menu-list');
             menuList.classList.toggle("hidden");
-            
+
             // Accesibilidad: Actualizar el estado del botón
             var menuButton = document.getElementById("menuToggle");
             var isExpanded = menuList.classList.contains("hidden") ? "false" : "true";
@@ -405,10 +407,10 @@
         }
 
         // Cerrar el menú al hacer clic fuera
-        document.addEventListener('click', function(event) {
+        document.addEventListener('click', function (event) {
             var menu = document.querySelector('.menu');
             var menuButton = document.getElementById("menuToggle");
-            
+
             if (!menu.contains(event.target)) {
                 var menuList = document.querySelector('.menu-list');
                 menuList.classList.add("hidden");
@@ -417,6 +419,22 @@
         });
 
 
+    </script>
+    <script>
+        // Mostrar alertas de flashdata
+        <?php if (session()->getFlashdata('alert')): ?>
+            <?php $alert = session()->getFlashdata('alert'); ?>
+            Swal.fire({
+                icon: '<?= $alert['type'] ?>',
+                title: '<?= $alert['title'] ?>',
+                text: '<?= $alert['message'] ?>',
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
+        <?php endif; ?>
     </script>
 
 </body>
