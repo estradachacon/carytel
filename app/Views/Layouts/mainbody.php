@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>Bienvenido</title>
+    <title>FC Encomiendas</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
@@ -316,37 +316,13 @@
                             <nav class="sb-sidenav-menu-nested nav" id="navAccordionTreasury">
                                 <a class="nav-link" href="#/invoices/create">Remunerar paquetes</a>
                                 <a class="nav-link" href="#/invoices/create">Movimientos de caja actual</a>
-                                <a class="nav-link collapsed" href="#" data-toggle="collapse"
-                                    data-target="#recurring_transaction" aria-expanded="false"
-                                    aria-controls="collapseLayouts">
-                                    <div class="sb-nav-link-icon"><i class="fa-solid fa-wallet"></i></div>
-                                    Transacción recurrente
-                                    <div class="sb-sidenav-collapse-arrow"><i class="fa-solid fa-angle-down"></i></div>
-                                </a>
-                                <div class="collapse" id="recurring_transaction" aria-labelledby="headingOne"
-                                    data-parent="#navAccordionTreasury">
-                                    <nav class="sb-sidenav-menu-nested nav">
-                                        <a class="nav-link"
-                                            href="https://suplidoresdiversos.tec101cloud.net/repeating_income/create">Añadir
-                                            ingresos recurrentes</a>
-                                        <a class="nav-link"
-                                            href="https://suplidoresdiversos.tec101cloud.net/repeating_income">Lista de
-                                            ingresos repetitivos</a>
-                                        <a class="nav-link"
-                                            href="https://suplidoresdiversos.tec101cloud.net/repeating_expense/create">Añadir
-                                            gastos recurrentes</a>
-                                        <a class="nav-link"
-                                            href="https://suplidoresdiversos.tec101cloud.net/repeating_expense">Lista de
-                                            gastos repetitivos</a>
-                                    </nav>
-                                </div>
                             </nav>
                         </div>
 
                         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#purchase_orders"
                             aria-expanded="false" aria-controls="collapseLayouts">
                             <div class="sb-nav-link-icon"><i class="fa-solid fa-bag-shopping"></i></div>
-                            Otros servicios
+                            Otros gastos
                             <div class="sb-sidenav-collapse-arrow"><i class="fa-solid fa-angle-down"></i></div>
                         </a>
                         <div class="collapse" id="purchase_orders" aria-labelledby="headingOne"
@@ -373,7 +349,7 @@
                             <nav class="sb-sidenav-menu-nested nav">
                                 <a class="nav-link" href="#/accounts">Reversión
                                     de pagos</a>
-                                <a class="nav-link" href="#/accounts/create">Perdonar flete</a>
+                                <a class="nav-link" href="#/accounts/create">Anular flete</a>
                             </nav>
                         </div>
 
@@ -385,23 +361,10 @@
                         </a>
                         <div class="collapse" id="reports" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
                             <nav class="sb-sidenav-menu-nested nav">
-                                <a class="nav-link" href="#/reports/account_statement">Estado
-                                    de cuenta</a>
-                                <a class="nav-link" href="#/reports/income_report">Informe de
-                                    Ingresos</a>
-                                <a class="nav-link" href="#/reports/expense_report">Informe de
-                                    gastos</a>
-                                <a class="nav-link" href="#/reports/transfer_report">Informe de
-                                    transferencia</a>
-                                <a class="nav-link" href="#/reports/income_vs_expense">Ingresos
-                                    VS Gastos</a>
-                                <a class="nav-link" href="#/reports/report_by_payer">Informe
-                                    del pagador</a>
-                                <a class="nav-link" href="#/reports/report_by_payee">Informe
-                                    por beneficiario</a>
-                                <a class="nav-link" href="#/sales_report">Informe de Ventas</a>
-                                <a class="nav-link" href="#/reports/report_dtes">Report
-                                    DTE´s</a>
+                                <a class="nav-link" href="#/reports/account_statement">Informe de Remuneraciones</a>
+                                <a class="nav-link" href="#/reports/account_statement">Informe de Cobros de envio</a>
+                                <a class="nav-link" href="#/reports/account_statement">Informe de No retirados</a>
+                                <a class="nav-link" href="#/reports/account_statement">Informe de gastos</a>
                             </nav>
                         </div>
 
@@ -417,29 +380,27 @@
                         <div class="collapse" id="company_settings" aria-labelledby="headingOne"
                             data-parent="#sidenavAccordion">
                             <nav class="sb-sidenav-menu-nested nav">
-                                <a class="nav-link" href="#/admin/administration/general_settings">Configuración
-                                    general</a>
+                                <a class="nav-link" href="#/admin/administration/general_settings">Configuración general</a>
                                 <a class="nav-link collapsed" href="#" data-toggle="collapse"
                                     data-target="#transactions" aria-expanded="false" aria-controls="collapseLayouts">
-                                    <div class="sb-nav-link-icon"><i class="fa-solid fa-store"></i></div>
-                                    Sucursales
+                                    <div class="sb-nav-link-icon"><i class="fa-solid fa-store"></i></div>Sucursales
                                     <div class="sb-sidenav-collapse-arrow"><i class="fa-solid fa-angle-down"></i></div>
                                 </a>
                                 <div class="collapse" id="transactions" aria-labelledby="headingOne"
                                     data-parent="#navAccordionTreasury">
                                     <nav class="sb-sidenav-menu-nested nav">
                                         <a class="nav-link"
-                                            href="https://suplidoresdiversos.tec101cloud.net/income">Listado de
+                                            href="#/income">Listado de
                                             sucursales</a>
                                         <a class="nav-link"
-                                            href="https://suplidoresdiversos.tec101cloud.net/expense">Gastos</a>
+                                            href="#/expense">Gastos</a>
                                         <a class="nav-link"
-                                            href="https://suplidoresdiversos.tec101cloud.net/transfer/create">Transferir</a>
+                                            href="#/transfer/create">Transferir</a>
                                         <a class="nav-link"
-                                            href="https://suplidoresdiversos.tec101cloud.net/income/calendar">Calendario
+                                            href="#/income/calendar">Calendario
                                             de ingresos</a>
                                         <a class="nav-link"
-                                            href="https://suplidoresdiversos.tec101cloud.net/expense/calendar">Calendario
+                                            href="#/expense/calendar">Calendario
                                             de gastos</a>
                                     </nav>
                                 </div>
@@ -456,8 +417,7 @@
                         </a>
                         <div class="collapse" id="staffs" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
                             <nav class="sb-sidenav-menu-nested nav">
-                                <a class="nav-link" href="#/admin/users">Todos
-                                    los usuarios</a>
+                                <a class="nav-link" href="users">Lista de usuarios</a>
                                 <a class="nav-link" href="#/roles">Roles del
                                     usuario</a>
                             </nav>
@@ -495,14 +455,18 @@
     <!--End layoutSidenav-->
 
     <!-- Core Js  -->
-    <script src="https://suplidoresdiversos.tec101cloud.net/public/backend/assets/js/jquery-3.6.0.min.js"></script>
-    <script
-        src="https://suplidoresdiversos.tec101cloud.net/public/backend/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-    <script src="https://suplidoresdiversos.tec101cloud.net/public/backend/assets/js/print.js"></script>
-    <script src="https://suplidoresdiversos.tec101cloud.net/public/backend/assets/js/pace.min.js"></script>
-    <script src="https://suplidoresdiversos.tec101cloud.net/public/backend/assets/js/clipboard.min.js"></script>
-    <script src="https://suplidoresdiversos.tec101cloud.net/public/backend/plugins/moment/moment.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap 4  -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Print.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/print-js/1.6.0/print.min.js" integrity="sha512-TKv+3cU8+2TrA6+6QbqR1hDXAhW/YPihLeIhK4P7Z4o+F1HgK0B3bxivXPV6d0+7bt4aZCkNpqFsC0mfFtYDXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- Pace.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha512-ihOkl4Ox8aTz6q7AD5xKGl6RZQ5Q9FvhToiLrP8FXbMtk7FbJFSVv21A9Te7EXv+T3Fg9vbvKUZejb2mEXH+WQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- Clipboard.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js" integrity="sha512-VzH/jE6mSwNjNlAof3wFECXZJ81E0T2IzfI5wz3rDyM8X/oU2sja3xuv4eQ8A2UoD4EEmrEPhnUB4G0gNrbKfA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
+    <!-- Moment.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment.min.js" integrity="sha512-Q4nH9nkwd4KXjX4E3n4H1Z6XoPwaF+79iRyJ6RZz0p+Gx9A0OrMxGuNEm6ZQej+mrp1f3KxIolC0mG4HkZgVvQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/locale/es.min.js"></script>
 
 
@@ -516,18 +480,15 @@
     <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr@1.9.1/dist/pickr.min.js"></script>
-
-
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/i18n/es.js"></script>
-    <script
-        src="https://suplidoresdiversos.tec101cloud.net/public/backend/plugins/daterangepicker/daterangepicker.js"></script>
-    <script src="https://suplidoresdiversos.tec101cloud.net/public/backend/plugins/tinymce/tinymce.min.js"></script>
-    <script src="https://suplidoresdiversos.tec101cloud.net/public/backend/plugins/parsleyjs/parsley.min.js"></script>
+    
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.6/jquery.inputmask.min.js"></script>
 
     <!-- App js -->
-    <script src="https://suplidoresdiversos.tec101cloud.net/public/backend/assets/js/scripts.js?v=1.21"></script>
+    <script src="backend/assets/js/scripts.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/TableDnD/0.9.1/jquery.tablednd.js"
         integrity="sha256-d3rtug+Hg1GZPB7Y/yTcRixO/wlI78+2m08tosoRn7A=" crossorigin="anonymous"></script>
@@ -552,8 +513,7 @@
     </script>
 
     <!-- Custom JS -->
-    <script
-        src="https://suplidoresdiversos.tec101cloud.net/public/backend/assets/js/datatables/products-table.js"></script>
+    <script src="<?php echo base_url('public/backend/assets/js/datatables/products-table.js'); ?>"></script>
 
 
 

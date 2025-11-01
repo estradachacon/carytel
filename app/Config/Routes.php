@@ -12,15 +12,6 @@ $routes->get('/logout', 'AuthController::logout');
 
 $routes->group('', ['filter' => 'auth'], function($routes) {    // Grupo del Dashboard (requiere autenticación)
     $routes->get('/dashboard', 'DashboardController::index'); // Página principal del dashboard
-    $routes->group('users', function($routes) {   // Módulo de Usuarios
-        $routes->resource('users', [
-            'controller' => 'UserController',
-            'except' => ['show'] // excluir show si no lo necesitas
-        ]);
-        // Rutas adicionales para usuarios
-        $routes->get('profile', 'UserController::profile');
-        $routes->post('profile/update', 'UserController::updateProfile');
-    });
     
     // Módulo de Pedidos
     $routes->group('orders', function($routes) {
@@ -38,4 +29,6 @@ $routes->group('', ['filter' => 'auth'], function($routes) {    // Grupo del Das
         $routes->get('users', 'ReportController::users');
         $routes->post('generate', 'ReportController::generate');
     }); 
+    // Módulo de Reportes
+    $routes->presenter('users', ['controller' => 'UserController', 'only' => ['index', 'new', 'create', 'edit', 'update', 'delete']]);
 });
