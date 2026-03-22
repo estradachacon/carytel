@@ -86,5 +86,10 @@ class Permisos extends BaseConfig
             'crear_roles',
             'asignar_permisos',
         ],
+
+        'Permisos InLine' => [
+            'editar_flete',
+            'reasignar_vendedor',
+        ],
     ];
 }

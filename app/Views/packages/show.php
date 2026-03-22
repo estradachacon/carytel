@@ -58,6 +58,19 @@
         transform: translateY(-1px);
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
     }
+
+    .select2-container .select2-selection--single {
+        height: 38px !important;
+        /* altura estándar Bootstrap */
+        border: 1px solid #ced4da;
+        border-radius: .375rem;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 36px !important;
+        /* centra texto */
+        padding-left: .75rem;
+    }
 </style>
 <?php
 /**
@@ -99,7 +112,15 @@ function formatDateDMY($fecha)
                                 </tr>
                                 <tr>
                                     <th>Vendedor</th>
-                                    <td><?= esc($package['seller_name'] ?? 'N/A') ?></td>
+                                    <td>
+                                        <span id="vendedorEdit"
+                                            data-id="<?= $package['id'] ?>"
+                                            data-vendedor="<?= $package['vendedor'] ?>"
+                                            data-nombre="<?= esc($package['seller_name']) ?>">
+
+                                            <?= esc($package['seller_name']) ?>
+                                        </span>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th>Tipo de Servicio</th>
@@ -484,6 +505,11 @@ function formatDateDMY($fecha)
     </div>
 </div>
 <script>
+    //variables globales
+    const puedeEditarFlete = <?= tienePermiso('editar_flete') ? 'true' : 'false' ?>;
+    const puedeReasignarVendedor = <?= tienePermiso('reasignar_vendedor') ? 'true' : 'false' ?>;
+</script>
+<script>
     document.getElementById('togglePagoParcial').addEventListener('change', function() {
 
         const id = this.dataset.id
@@ -532,8 +558,160 @@ function formatDateDMY($fecha)
     })
 </script>
 <script>
-    document.getElementById('fleteTotalEdit').addEventListener('click', function() {
+    document.addEventListener('DOMContentLoaded', function() {
 
+        const vendedorBtn = document.getElementById('vendedorEdit')
+        if (!vendedorBtn) return
+
+        vendedorBtn.addEventListener('click', function() {
+
+            if (!puedeReasignarVendedor) {
+                Swal.fire('Sin permiso', 'No puedes reasignar el vendedor', 'error')
+                return
+            }
+
+            const id = this.dataset.id
+            const vendedorActual = this.dataset.vendedor
+            const nombreActual = this.dataset.nombre
+
+            Swal.fire({
+                title: 'Reasignar vendedor',
+
+                html: `
+                <div style="text-align:left">
+
+                    <div style="margin-bottom:10px;">
+                        <strong>Vendedor actual:</strong><br>
+                        <span style="color:#007bff">${nombreActual}</span>
+                    </div>
+
+                    <div style="margin-bottom:10px; color:#dc3545;">
+                        ⚠️ Cambiar el vendedor puede afectar reportes y comisiones.
+                    </div>
+
+                    <label>Nuevo vendedor</label>
+                    <select id="editVendedor" style="width:100%"></select>
+
+                </div>
+            `,
+
+                showCancelButton: true,
+                confirmButtonText: 'Guardar',
+
+                didOpen: () => {
+
+                    $('#editVendedor').select2({
+                        dropdownParent: $('.swal2-container'),
+                        ajax: {
+                            url: "<?= base_url('sellers-search') ?>",
+                            dataType: 'json',
+                            delay: 250,
+                            data: params => ({
+                                q: params.term
+                            }),
+
+                            processResults: function(data) {
+                                return {
+                                    results: data
+                                }
+                            }
+                        },
+                        placeholder: 'Buscar vendedor...',
+                        minimumInputLength: 1
+                    })
+
+                    const option = new Option(nombreActual, vendedorActual, true, true)
+                    $('#editVendedor').append(option).trigger('change')
+                },
+
+                preConfirm: () => {
+
+                    const vendedor = $('#editVendedor').val()
+
+                    if (!vendedor) {
+                        Swal.showValidationMessage('Debe seleccionar un vendedor')
+                        return false
+                    }
+
+                    if (vendedor == vendedorActual) {
+                        Swal.showValidationMessage('Debe seleccionar un vendedor diferente')
+                        return false
+                    }
+
+                    return {
+                        vendedor
+                    }
+                }
+
+            }).then(result => {
+
+                if (!result.isConfirmed) return
+
+                // 🔥 SEGUNDA CONFIRMACIÓN
+                Swal.fire({
+                    title: 'Confirmación final',
+                    html: `
+            <div style="text-align:left">
+                <p>Estás a punto de cambiar el vendedor:</p>
+
+                <p><strong>De:</strong> ${nombreActual}</p>
+                <p><strong>A:</strong> ${$('#editVendedor option:selected').text()}</p>
+
+                <br>
+                <span style="color:#dc3545">
+                    ⚠️ Esta acción puede afectar reportes, comisiones y pagos.
+                </span>
+            </div>
+        `,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí, cambiar vendedor',
+                    cancelButtonText: 'Cancelar'
+                }).then(confirm2 => {
+
+                    if (!confirm2.isConfirmed) return
+
+                    // 🚀 AHORA SÍ ENVÍA
+                    fetch("<?= base_url('packages/updateVendedor') ?>", {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                id: id,
+                                vendedor: result.value.vendedor
+                            })
+                        })
+                        .then(r => r.json())
+                        .then(data => {
+
+                            if (data.status !== 'ok') {
+                                Swal.fire('Error', data.message, 'error')
+                                return
+                            }
+
+                            Swal.fire('Actualizado', 'Vendedor reasignado correctamente', 'success')
+                                .then(() => location.reload())
+                        })
+
+                })
+
+            })
+        })
+
+    })
+
+    document.getElementById('fleteTotalEdit').addEventListener('click', function() {
+        if (!puedeEditarFlete) {
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Sin permiso',
+                text: 'No tienes permiso para editar el flete.'
+            });
+
+            return; // 🚫 IMPORTANTE: corta ejecución
+        }
         const id = this.dataset.id
         const total = parseFloat(this.dataset.total)
         const pagado = parseFloat(this.dataset.pagado)
@@ -670,16 +848,17 @@ function formatDateDMY($fecha)
                 .then(r => r.json())
                 .then(data => {
 
-                    if (data.status == 'ok') {
-
-                        location.reload()
-
+                    if (data.status !== 'ok') {
+                        Swal.fire('Error', data.message, 'error')
+                        return
                     }
 
+                    location.reload()
                 })
 
         })
 
     })
 </script>
+
 <?= $this->endSection() ?>

@@ -5,15 +5,28 @@ function isLoggedIn()
     return session()->get('logged_in') === true;
 }
 
+function tienePermisoDB($accion)
+{
+    $roleId = session()->get('role_id');
+
+    $permisoModel = new \App\Models\PermisoRolModel();
+    $permisos = $permisoModel->getPermisosPorRol($roleId);
+
+    $map = array_column($permisos, 'habilitado', 'nombre_accion');
+
+    return !empty($map[$accion]);
+}
+
 function tienePermiso($accion)
 {
+    // 🔥 si es AJAX → consulta SIEMPRE DB
+    if (request()->isAJAX()) {
+        return tienePermisoDB($accion);
+    }
+
     refrescarPermisos();
 
     $permisos = session()->get('permisos');
-
-    if (!$permisos || !is_array($permisos)) {
-        return false;
-    }
 
     return !empty($permisos[$accion]);
 }

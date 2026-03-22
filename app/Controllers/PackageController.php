@@ -40,6 +40,7 @@ class PackageController extends BaseController
         $filter_date_to = $this->request->getGet('fecha_hasta');
         $filter_package_id = $this->request->getGet('package_id');
         $filter_flete_cero = $this->request->getGet('flete_cero');
+        $filter_sin_vendedor = $this->request->getGet('sin_vendedor');
 
         $builder = $this->packageModel
             ->select('
@@ -79,6 +80,12 @@ class PackageController extends BaseController
         if ($filter_flete_cero == 1) {
             $builder->where('COALESCE(packages.flete_total,0)', 0);
         }
+
+        // 🔥 FILTRO HUÉRFANOS
+        if ($filter_sin_vendedor == 1) {
+            $builder->where('packages.vendedor IS NOT NULL');
+            $builder->where('sellers.id IS NULL');
+        }
         $packages = $builder->paginate($perPage);
         $pager = $builder->pager;
 
@@ -117,7 +124,8 @@ class PackageController extends BaseController
             'seller_selected'  => $seller_selected,
             'filter_package_id' => $filter_package_id,
             'filter_flete_cero' => $filter_flete_cero,
-            'tipoServicio' => $tipoServicio
+            'tipoServicio' => $tipoServicio,
+            'filter_sin_vendedor' => $filter_sin_vendedor,
         ]);
     }
 
@@ -1165,8 +1173,16 @@ class PackageController extends BaseController
     }
     public function updateFleteCompleto()
     {
+        if (!tienePermiso('editar_flete')) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'No autorizado'
+            ]);
+        }
 
         helper('transaction');
+        $session = session();
+        $userId = $session->get('user_id');
 
         $data = $this->request->getJSON(true);
 
@@ -1178,14 +1194,12 @@ class PackageController extends BaseController
         $package = $this->packageModel->find($id);
 
         if (!$package) {
-
             return $this->response->setJSON([
                 'status' => 'error'
             ]);
         }
 
         if ($pagado > $total) {
-
             return $this->response->setJSON([
                 'status' => 'error',
                 'message' => 'Pagado mayor al total'
@@ -1194,22 +1208,24 @@ class PackageController extends BaseController
 
         $pendiente = $total - $pagado;
 
-        $update = [
+        // 🔥 GUARDAMOS VALORES ANTERIORES
+        $oldTotal = $package['flete_total'];
+        $oldPagado = $package['flete_pagado'];
+        $oldPendiente = $package['flete_pendiente'];
 
+        $update = [
             'flete_total' => $total,
             'flete_pagado' => $pagado,
             'flete_pendiente' => $pendiente,
             'toggle_pago_parcial' => $toggle
-
         ];
 
         $this->packageModel->update($id, $update);
 
-        // registrar diferencia en cuenta
-        $diferencia = $pagado - $package['flete_pagado'];
+        // 💰 lógica de dinero
+        $diferencia = $pagado - $oldPagado;
 
         if ($diferencia > 0) {
-
             $accountId = 1;
 
             $db = db_connect();
@@ -1227,6 +1243,37 @@ class PackageController extends BaseController
                 $id
             );
         }
+
+        // Bitacora
+        $cambios = [];
+
+        if ($oldTotal != $total) {
+            $cambios[] = "Flete total: $oldTotal → $total";
+        }
+
+        if ($oldPagado != $pagado) {
+            $cambios[] = "Flete pagado: $oldPagado → $pagado";
+        }
+
+        if ($oldPendiente != $pendiente) {
+            $cambios[] = "Flete pendiente: $oldPendiente → $pendiente";
+        }
+
+        if ($toggle != $package['toggle_pago_parcial']) {
+            $cambios[] = "Modo pago: " . ($package['toggle_pago_parcial'] ? 'Parcial' : 'Completo') .
+                " → " . ($toggle ? 'Parcial' : 'Completo');
+        }
+
+        $detalle = !empty($cambios)
+            ? implode(' | ', $cambios)
+            : 'Sin cambios detectados';
+
+        registrar_bitacora(
+            'Edición de flete InLine',
+            'Paquetería',
+            'Paquete ID ' . $id . ' actualizado. ' . $detalle,
+            $userId
+        );
 
         return $this->response->setJSON([
             'status' => 'ok'
@@ -1253,6 +1300,63 @@ class PackageController extends BaseController
 
         return $this->response->setJSON([
             'success' => true
+        ]);
+    }
+    public function updateVendedor()
+    {
+        if (!tienePermiso('reasignar_vendedor')) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'No autorizado'
+            ]);
+        }
+
+        $session = session();
+        $userId = $session->get('id');
+
+        $data = $this->request->getJSON(true);
+
+        $id = $data['id'];
+        $nuevoVendedor = $data['vendedor'];
+
+        $package = $this->packageModel->find($id);
+
+        if (!$package) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'Paquete no encontrado'
+            ]);
+        }
+
+        $oldVendedor = $package['vendedor'];
+
+        if ($oldVendedor == $nuevoVendedor) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'No hay cambios'
+            ]);
+        }
+
+        $sellerModel = new SellerModel();
+
+        $old = $sellerModel->find($oldVendedor);
+        $new = $sellerModel->find($nuevoVendedor);
+
+        $this->packageModel->update($id, [
+            'vendedor' => $nuevoVendedor
+        ]);
+
+        registrar_bitacora(
+            'Reasignación de vendedor',
+            'Paquetería',
+            'Paquete ID ' . $id .
+                ' vendedor cambiado de "' . ($old->seller ?? 'N/A') .
+                '" a "' . ($new->seller ?? 'N/A') . '"',
+            $userId
+        );
+
+        return $this->response->setJSON([
+            'status' => 'ok'
         ]);
     }
 }

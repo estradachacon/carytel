@@ -1,5 +1,22 @@
 <?= $this->extend('Layouts/mainbody') ?>
 <?= $this->section('content') ?>
+<style>
+    .pill-filter {
+        display: inline-flex;
+        align-items: center;
+        background: #ffc107;
+        color: #212529;
+        border-radius: 50px;
+        padding: 6px 12px;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+    .pill-filter .remove {
+        margin-left: 8px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+</style>
 <link rel="stylesheet" href="<?= base_url('backend/assets/css/newpackage.css') ?>">
 <style>
     /* Animación dropdown */
@@ -123,6 +140,16 @@
                             <input type="number" name="package_id" class="form-control"
                                 placeholder="Ej: 1502"
                                 value="<?= esc($filter_package_id ?? '') ?>">
+                        </div>
+                        <!-- Buscar huerfanos -->
+                        <div class="col-md-2 d-flex align-items-end">
+                            <a href="<?= base_url('packages?' . http_build_query(array_merge($_GET, [
+                                            'sin_vendedor' => !empty($filter_sin_vendedor) ? null : 1
+                                        ]))) ?>"
+                                class="btn <?= !empty($filter_sin_vendedor) ? 'btn-warning' : 'btn-outline-secondary' ?> w-100">
+
+                                🧩 Sin vendedor
+                            </a>
                         </div>
                     </div>
 
