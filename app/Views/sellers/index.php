@@ -1,5 +1,10 @@
 <?= $this->extend('Layouts/mainbody') ?>
 <?= $this->section('content') ?>
+<style>
+    #orderSelect {
+    min-height: 38px;
+}
+</style>
 <div class="row">
     <div class="col-md-12">
         <div class="card">
@@ -14,7 +19,7 @@
 
                 <div class="row mb-3 align-items-end">
 
-                    <div class="col-md-10">
+                    <div class="col-md-8">
                         <label for="searchInput">Buscar vendedor</label>
                         <div class="input-group">
                             <input type="text" id="searchInput" class="form-control" placeholder="Nombre, teléfono o ID"
@@ -29,7 +34,14 @@
                             </div>
                         </div>
                     </div>
-
+                    <div class="col-md-2">
+                        <label>Orden</label>
+                        <select id="orderSelect" class="form-control form-control-sm">
+                            <option value="recent" <?= ($order == 'recent') ? 'selected' : '' ?>>Más recientes</option>
+                            <option value="alpha_asc" <?= ($order == 'alpha_asc') ? 'selected' : '' ?>>A → Z</option>
+                            <option value="alpha_desc" <?= ($order == 'alpha_desc') ? 'selected' : '' ?>>Z → A</option>
+                        </select>
+                    </div>
                     <div class="col-md-2">
                         <div class="d-flex justify-content-end align-items-center">
                             <label for="perPageSelect" class="mr-2 mb-0">Resultados:</label>
@@ -41,6 +53,7 @@
                             </select>
                         </div>
                     </div>
+
                 </div>
                 <div id="table-container">
                     <?= $this->include('sellers/_seller_table') ?>
@@ -62,8 +75,9 @@
         // Función para cargar los resultados (tabla)
         function loadResults(query, page = 1) {
             const perPage = document.getElementById('perPageSelect').value;
+            const order = document.getElementById('orderSelect').value; // 👈 NUEVO
 
-            const url = `${baseUrl}?q=${encodeURIComponent(query)}&page=${page}&perPage=${perPage}`;
+            const url = `${baseUrl}?q=${encodeURIComponent(query)}&page=${page}&perPage=${perPage}&order=${order}`;
 
             loadingSpinner.style.display = 'block';
 
@@ -75,10 +89,6 @@
                     updateClearButton(query);
                     rebindEvents();
                 })
-                .catch(() => {
-                    loadingSpinner.style.display = 'none';
-                    tableContainer.innerHTML = '<div class="alert alert-danger">Error al cargar los datos.</div>';
-                });
         }
 
         // 🔥 Cuando cambias los resultados por página
@@ -86,7 +96,10 @@
             const query = searchInput.value.trim();
             loadResults(query, 1);
         });
-
+        document.getElementById('orderSelect').addEventListener('change', function() {
+            const query = searchInput.value.trim();
+            loadResults(query, 1);
+        });
         // Re-adjuntar eventos (paginación y delete)
         function rebindEvents() {
             document.querySelectorAll('#pagination-links a').forEach(link => {

@@ -23,10 +23,11 @@ class SellerController extends BaseController
         $q = trim($this->request->getGet('q') ?? '');
         $alpha = trim($this->request->getGet('alpha') ?? '');
         $perPage = intval($this->request->getGet('perPage') ?? 10);
+        $order = $this->request->getGet('order') ?? 'recent'; // 👈 NUEVO
 
         $builder = $this->sellerModel;
 
-        // BÚSQUEDA GENERAL
+        // 🔍 BÚSQUEDA GENERAL
         if ($q !== '') {
             $builder = $builder
                 ->groupStart()
@@ -36,22 +37,37 @@ class SellerController extends BaseController
                 ->groupEnd();
         }
 
-        // FILTRO ALFABÉTICO
+        // 🔤 FILTRO ALFABÉTICO
         if ($alpha !== '') {
             $builder = $builder->like('seller', $alpha, 'after');
+        }
+
+        // 🔥 ORDEN (AQUÍ ESTÁ TODO EL CAMBIO)
+        switch ($order) {
+            case 'alpha_asc':
+                $builder = $builder->orderBy('seller', 'ASC');
+                break;
+
+            case 'alpha_desc':
+                $builder = $builder->orderBy('seller', 'DESC');
+                break;
+
+            default:
+                $builder = $builder->orderBy('id', 'DESC'); // recientes
+                break;
         }
 
         $data = [
             'q' => $q,
             'alpha' => $alpha,
             'perPage' => $perPage,
+            'order' => $order, // 👈 IMPORTANTE para el select
             'sellers' => $builder->paginate($perPage),
             'pager' => $builder->pager,
         ];
 
         return view('sellers/index', $data);
     }
-
 
 
     public function new()
@@ -283,7 +299,15 @@ class SellerController extends BaseController
         }
 
         // Si necesitas ordenar, hazlo aquí antes de paginar:
-        $builder = $builder->orderBy('id', 'DESC');
+        $order = $this->request->getGet('order');
+
+        if ($order === 'alpha_asc') {
+            $builder = $builder->orderBy('seller', 'ASC');
+        } elseif ($order === 'alpha_desc') {
+            $builder = $builder->orderBy('seller', 'DESC');
+        } else {
+            $builder = $builder->orderBy('id', 'DESC'); // comportamiento original
+        }
 
         $data = [
             'q' => $q,
