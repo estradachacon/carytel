@@ -2,8 +2,18 @@
 <?= $this->section('content') ?>
 <style>
     #orderSelect {
-    min-height: 38px;
-}
+        min-height: 38px;
+    }
+
+    #sellers-table td,
+    #sellers-table th {
+        padding: 5px 10px;
+        vertical-align: middle;
+    }
+
+    #sellers-table {
+        font-size: 16px;
+    }
 </style>
 <div class="row">
     <div class="col-md-12">
@@ -50,6 +60,8 @@
                                 <option value="10" <?= ($perPage == 10) ? 'selected' : '' ?>>10</option>
                                 <option value="20" <?= ($perPage == 20) ? 'selected' : '' ?>>20</option>
                                 <option value="50" <?= ($perPage == 50) ? 'selected' : '' ?>>50</option>
+                                <option value="100" <?= ($perPage == 100) ? 'selected' : '' ?>>100</option>
+                                <option value="500" <?= ($perPage == 500) ? 'selected' : '' ?>>500</option>
                             </select>
                         </div>
                     </div>
