@@ -10,6 +10,7 @@ class UserModel extends Model
     protected $primaryKey = 'id';
     protected $allowedFields = ['user_name', 'email', 'user_password', 'role_id', 'branch_id', 'foto'];
     protected $returnType = 'array';
+    protected $useTimestamps = true;
 
     public function getUserByEmail($email)
     {

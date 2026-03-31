@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use CodeIgniter\HTTP\ResponseInterface;
 use App\Models\UserModel;
+use App\Services\PushService;
 
 class UserController extends BaseController
 {
@@ -147,7 +148,9 @@ class UserController extends BaseController
         }
 
         $this->userModel->update($id, $data);
-
+        
+        PushService::send('sync_users');
+        
         registrar_bitacora(
             'Editar usuario',
             'Usuarios',

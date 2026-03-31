@@ -21,6 +21,10 @@ $routes->group('auth', function ($routes) {
     $routes->post('reset-password', 'AuthController::resetPassword');
 });
 
+// RUTAS PARA API DE APP
+$routes->get('api/sync/users', 'Api\SyncController::users');
+$routes->post('api/save-token', 'Api\SyncController::saveToken');
+
 $routes->group('', ['filter' => 'auth'], function ($routes) {    // Grupo del Dashboard (requiere autenticación)
     $routes->get('/dashboard', 'DashboardController::index'); // Página principal del dashboard
 
