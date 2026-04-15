@@ -42,7 +42,11 @@ class PackageModel extends Model
         'external_location_id',
         'cliente_pago_directo',
         'fecha_cliente_pago',
-        'motivo_no_cobro'
+        'motivo_no_cobro',
+        'metodo_remu',
+        'remunerado_con_cuenta',
+        'remu_user_id',
+        'fecha_remu'
     ];
     protected $updatedField = 'updated_at';
     protected $createdField = 'created_at';

@@ -70,7 +70,22 @@ abstract class BaseController extends Controller
         }
 
         if (session()->get('id')) {
+            
             $this->runSystemTasks();
+
+            $userId  = session()->get('id');
+            $roleId  = session()->get('role_id');
+
+            log_message('debug', '>>> roleId: ' . $roleId);
+
+            $notifModel = new \App\Models\NotificationModel();
+            $noLeidas   = $notifModel->getNoLeidasVisibles($userId, $roleId, 5);
+            $contador   = $notifModel->contarNoLeidas($userId, $roleId);
+
+            service('renderer')->setData([
+                'notif_lista'    => $noLeidas,
+                'notif_contador' => $contador,
+            ]);
         }
     }
     protected function runSystemTasks()

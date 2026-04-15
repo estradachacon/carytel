@@ -134,23 +134,45 @@ function formatDateDMY($fecha)
                                 <tr>
                                     <th>Estatus</th>
                                     <td>
+                                        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
 
-                                        <div style="display:flex; gap:10px; align-items:center;">
+                                            <div style="display:flex; gap:12px; align-items:center;">
 
-                                            <?php if (!empty($package['estatus'])): ?>
-                                                <div style="border-right:1px solid #ddd; padding-right:10px;">
-                                                    <?= statusBadge($package['estatus']) ?>
-                                                </div>
-                                            <?php endif; ?>
+                                                <?php if (!empty($package['estatus'])): ?>
+                                                    <div style="border-right:1px solid #ddd; padding-right:10px;">
+                                                        <?= statusBadge($package['estatus']) ?>
+                                                    </div>
+                                                <?php endif; ?>
 
-                                            <?php if (!empty($package['estatus2'])): ?>
-                                                <div>
-                                                    <?= statusBadge($package['estatus2']) ?>
-                                                </div>
+                                                <?php if (!empty($package['estatus2'])): ?>
+                                                    <div>
+                                                        <?= statusBadge($package['estatus2']) ?>
+                                                    </div>
+                                                <?php endif; ?>
+
+                                            </div>
+
+                                            <?php if ($package['estatus'] === 'finalizado' && $package['estatus2'] === 'remunerado'): ?>
+                                                <?php if (tienePermiso('solicitar_reversion')): ?>
+                                                    <div>
+                                                        <?php if (!empty($solicitudPendiente)): ?>
+                                                            <span class="badge badge-warning p-2" style="font-size:0.75rem;">
+                                                                <i class="fa-solid fa-clock"></i> Solicitud en proceso
+                                                            </span>
+                                                        <?php else: ?>
+                                                            <button
+                                                                id="btnRevertirPago"
+                                                                class="btn btn-sm btn-warning tracking-btn"
+                                                                data-id="<?= $package['id'] ?>"
+                                                                style="font-size:0.75rem; padding:2px 8px;">
+                                                                <i class="fa-solid fa-rotate-left"></i> Solicitar reversión de Pago
+                                                            </button>
+                                                        <?php endif; ?>
+                                                    </div>
+                                                <?php endif; ?>
                                             <?php endif; ?>
 
                                         </div>
-
                                     </td>
                                 </tr>
 
@@ -510,6 +532,90 @@ function formatDateDMY($fecha)
     const puedeReasignarVendedor = <?= tienePermiso('reasignar_vendedor') ? 'true' : 'false' ?>;
 </script>
 <script>
+    const btnRevertir = document.getElementById('btnRevertirPago')
+    if (btnRevertir) {
+        btnRevertir.addEventListener('click', function() {
+            const id = this.dataset.id
+
+            Swal.fire({
+                title: 'Solicitar reversión de pago',
+                html: `
+                    <div style="text-align:left; overflow-y:auto;">
+
+                        <div style="margin-bottom:12px;">
+                            <label style="font-weight:350; font-size:0.9rem; color:#555;">
+                                Motivo de la solicitud
+                            </label>
+                            <textarea id="motivoReversion"
+                                class="swal2-textarea"
+                                placeholder="Describe el motivo de la reversión..."
+                                style="width:80%; margin-top:4px; resize:vertical;"></textarea>
+                        </div>
+
+                        <div>
+                            <label style="font-weight:600; font-size:0.9rem; color:#555;">
+                                Confirma tu contraseña
+                            </label>
+                            <input id="passwordReversion"
+                                type="password"
+                                class="swal2-input"
+                                placeholder="Tu contraseña"
+                                style="width:80%; margin-top:4px;">
+                        </div>
+
+                    </div>
+                `,
+                width: '500px',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Enviar solicitud',
+                cancelButtonText: 'Cancelar',
+                confirmButtonColor: '#e0a800',
+                preConfirm: () => {
+                    const motivo = document.getElementById('motivoReversion').value.trim()
+                    const password = document.getElementById('passwordReversion').value.trim()
+
+                    if (!motivo) {
+                        Swal.showValidationMessage('El motivo es obligatorio')
+                        return false
+                    }
+
+                    if (!password) {
+                        Swal.showValidationMessage('Debes confirmar tu contraseña')
+                        return false
+                    }
+
+                    return {
+                        motivo,
+                        password
+                    }
+                }
+            }).then(result => {
+                if (!result.isConfirmed) return
+
+                fetch("<?= base_url('solicitudes/store') ?>", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            package_id: id,
+                            motivo: result.value.motivo,
+                            password: result.value.password
+                        })
+                    })
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.status !== 'ok') {
+                            Swal.fire('Error', data.message, 'error')
+                            return
+                        }
+                        Swal.fire('Solicitud enviada', 'Se notificará a los administradores.', 'success')
+                            .then(() => location.reload())
+                    })
+            })
+        })
+    }
     document.getElementById('togglePagoParcial').addEventListener('change', function() {
 
         const id = this.dataset.id

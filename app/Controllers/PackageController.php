@@ -216,9 +216,18 @@ class PackageController extends BaseController
 
         $package['destinos'] = implode(' → ', $destinos);
 
+        // Verificar si hay solicitud de reversión pendiente
+        $db = \Config\Database::connect();
+        $solicitudPendiente = $db->table('reversal_requests')
+            ->where('package_id', $id)
+            ->where('estatus', 'pendiente')
+            ->get()
+            ->getRowArray();
+
         return view('packages/show', [
-            'package' => $package,
-            'trackingHistory' => $trackingHistory
+            'package'           => $package,
+            'trackingHistory'   => $trackingHistory,
+            'solicitudPendiente' => $solicitudPendiente
         ]);
     }
 

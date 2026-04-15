@@ -180,7 +180,12 @@
                         Vendedores
                     </a>
                 <?php endif; ?>
-
+                <?php if (tienePermiso('ver_solicitudes')): ?>
+                    <a href="<?= base_url('solicitudes') ?>" class="nav-link">
+                        <div class="sb-nav-link-icon"><i class="fa-solid fa-rotate-left"></i></div>
+                        Solicitudes de Reversión
+                    </a>
+                <?php endif; ?>
                 <?php if (
                     tienePermiso('ver_puntosfijos') ||
                     tienePermiso('ver_rutas') ||

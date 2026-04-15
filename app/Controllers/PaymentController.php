@@ -147,106 +147,110 @@ class PaymentController extends BaseController
 
         foreach ($packagesDB as $package) {
 
-            $builder = $db->table('packages')
-                ->where('id', $package['id'])
-                ->set('amount_paid', $package['monto'])
-                ->set('flete_pagado', "COALESCE(flete_pagado,0) + {$package['pendiente']}", false)
-                ->set('flete_pendiente', 0)
-                ->set('metodo_remu', 'caja')
-                ->set('remu_user_id', $session->get('id'));
+            foreach ($packagesDB as $package) {
 
-            // SOLO FINALIZAR SI YA ESTABA ENTREGADO
-            if ($package['estatus'] === 'entregado') {
+                $builder = $db->table('packages')
+                    ->where('id', $package['id'])
+                    ->set('amount_paid', $package['monto'])
+                    ->set('flete_pagado', "COALESCE(flete_pagado,0) + {$package['pendiente']}", false)
+                    ->set('flete_pendiente', 0)
+                    ->set('metodo_remu', 'caja')
+                    ->set('remunerado_con_cuenta', 1)
+                    ->set('remu_user_id', $session->get('id'));
 
-                $builder
-                    ->set('estatus', 'finalizado')
-                    ->set('estatus2', 'remunerado')
-                    ->set('fecha_remu', date('Y-m-d H:i:s'));
+                // SOLO FINALIZAR SI YA ESTABA ENTREGADO
+                if ($package['estatus'] === 'entregado') {
+                    $builder
+                        ->set('estatus', 'finalizado')
+                        ->set('estatus2', 'remunerado')
+                        ->set('fecha_remu', date('Y-m-d H:i:s'));
+                }
+
+                $builder->update();
             }
 
-            $builder->update();
-        }
+            $cashierMovementModel = new \App\Models\CashierMovementModel();
 
-        $cashierMovementModel = new \App\Models\CashierMovementModel();
+            $currentBalance = (float) $cashier['current_balance'];
 
-        $currentBalance = (float) $cashier['current_balance'];
+            // ===============================
+            // 5️⃣ SALIDA BRUTA
+            // ===============================
 
-        // ===============================
-        // 5️⃣ SALIDA BRUTA
-        // ===============================
+            $balanceAfterOut = $currentBalance - $totalSalida;
 
-        $balanceAfterOut = $currentBalance - $totalSalida;
+            if ($totalSalida > 0) {
+                $cashierMovementModel->insert([
+                    'cashier_id'         => $cashier['id'],
+                    'cashier_session_id' => $cashierSession['id'],
+                    'user_id'            => $session->get('id'),
+                    'branch_id'          => $session->get('branch_id'),
+                    'type'               => 'out',
+                    'amount'             => $totalSalida,
+                    'balance_after'      => $balanceAfterOut,
+                    'concept'            => 'Pago bruto vendedor #' . $sellerId,
+                    'reference_type'     => 'Remuneraciones',
+                    'created_at'         => date('Y-m-d H:i:s'),
+                ]);
+            }
 
-        if ($totalSalida > 0) {
-            $cashierMovementModel->insert([
-                'cashier_id'         => $cashier['id'],
-                'cashier_session_id' => $cashierSession['id'],
-                'user_id'            => $session->get('id'),
-                'branch_id'          => $session->get('branch_id'),
-                'type'               => 'out',
-                'amount'             => $totalSalida,
-                'balance_after'      => $balanceAfterOut,
-                'concept'            => 'Pago bruto vendedor #' . $sellerId,
-                'reference_type'     => 'Remuneraciones',
-                'created_at'         => date('Y-m-d H:i:s'),
-            ]);
-        }
+            // ===============================
+            // 6️⃣ ENTRADA POR FLETES
+            // ===============================
 
-        // ===============================
-        // 6️⃣ ENTRADA POR FLETES
-        // ===============================
+            $balanceAfterIn = $balanceAfterOut + $totalEntrada;
 
-        $balanceAfterIn = $balanceAfterOut + $totalEntrada;
+            if ($totalEntrada > 0) {
+                $cashierMovementModel->insert([
+                    'cashier_id'         => $cashier['id'],
+                    'cashier_session_id' => $cashierSession['id'],
+                    'user_id'            => $session->get('id'),
+                    'branch_id'          => $session->get('branch_id'),
+                    'type'               => 'in',
+                    'amount'             => $totalEntrada,
+                    'balance_after'      => $balanceAfterIn,
+                    'concept'            => 'Cobro fletes vendedor #' . $sellerId,
+                    'reference_type'     => 'Fletes',
+                    'created_at'         => date('Y-m-d H:i:s'),
+                ]);
+            }
 
-        if ($totalEntrada > 0) {
-            $cashierMovementModel->insert([
-                'cashier_id'         => $cashier['id'],
-                'cashier_session_id' => $cashierSession['id'],
-                'user_id'            => $session->get('id'),
-                'branch_id'          => $session->get('branch_id'),
-                'type'               => 'in',
-                'amount'             => $totalEntrada,
-                'balance_after'      => $balanceAfterIn,
-                'concept'            => 'Cobro fletes vendedor #' . $sellerId,
-                'reference_type'     => 'Fletes',
-                'created_at'         => date('Y-m-d H:i:s'),
-            ]);
-        }
+            // ===============================
+            // 7️⃣ ACTUALIZAR SALDO CAJA
+            // ===============================
 
-        // ===============================
-        // 7️⃣ ACTUALIZAR SALDO CAJA
-        // ===============================
+            $db->table('cashier')
+                ->where('id', $cashier['id'])
+                ->update([
+                    'current_balance' => $balanceAfterIn
+                ]);
 
-        $db->table('cashier')
-            ->where('id', $cashier['id'])
-            ->update([
-                'current_balance' => $balanceAfterIn
-            ]);
+            $db->transComplete();
 
-        $db->transComplete();
+            if ($db->transStatus() === false) {
+                return $this->response->setJSON([
+                    'success' => false,
+                    'message' => 'Error al procesar el pago'
+                ]);
+            }
 
-        if ($db->transStatus() === false) {
+            registrar_bitacora(
+                'Pago a vendedor ID ' . esc($sellerId),
+                'Remuneraciones',
+                'Salida: $' . number_format($totalSalida, 2) .
+                    ' | Entrada por fletes: $' . number_format($totalEntrada, 2) .
+                    ' | Neto: $' . number_format($totalNeto, 2),
+                $session->get('id')
+            );
+
             return $this->response->setJSON([
-                'success' => false,
-                'message' => 'Error al procesar el pago'
+                'success'     => true,
+                'total_paid'  => $totalNeto,
+                'new_balance' => $balanceAfterIn
             ]);
         }
-
-        registrar_bitacora(
-            'Pago a vendedor ID ' . esc($sellerId),
-            'Remuneraciones',
-            'Salida: $' . number_format($totalSalida, 2) .
-                ' | Entrada por fletes: $' . number_format($totalEntrada, 2) .
-                ' | Neto: $' . number_format($totalNeto, 2),
-            $session->get('id')
-        );
-
-        return $this->response->setJSON([
-            'success'     => true,
-            'total_paid'  => $totalNeto,
-            'new_balance' => $balanceAfterIn
-        ]);
     }
+
 
     public function paySellerbyAccount()
     {
@@ -321,6 +325,7 @@ class PaymentController extends BaseController
                 ->set('flete_pagado', "COALESCE(flete_pagado,0) + {$pendiente}", false)
                 ->set('flete_pendiente', 0)
                 ->set('metodo_remu', 'cuenta')
+                ->set('remunerado_con_cuenta', $accountId)
                 ->set('remu_user_id', $session->get('id'));
 
             // SOLO FINALIZAR SI YA ESTABA ENTREGADO

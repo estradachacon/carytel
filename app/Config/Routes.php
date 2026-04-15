@@ -147,9 +147,9 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {    // Grupo del Da
 
     $routes->get('packages/quickload', 'PackageController::quickLoad');
     $routes->post('packages/quickstore', 'PackageController::quickStore');
-    $routes->post('packages/updateFlete','PackageController::updateFlete');
-    $routes->post('packages/updatePagoParcial','PackageController::updatePagoParcial');
-    $routes->post('packages/updateFleteCompleto','PackageController::updateFleteCompleto');
+    $routes->post('packages/updateFlete', 'PackageController::updateFlete');
+    $routes->post('packages/updatePagoParcial', 'PackageController::updatePagoParcial');
+    $routes->post('packages/updateFleteCompleto', 'PackageController::updateFleteCompleto');
     $routes->post('packages/updateVendedor', 'PackageController::updateVendedor');
 
     $routes->post('packages-setDestino', 'PackageController::setDestino');
@@ -199,4 +199,17 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {    // Grupo del Da
     $routes->get('external-locations/delete/(:num)', 'ExternalLocations::delete/$1');
     $routes->get('external-locations/get/(:num)', 'ExternalLocations::get/$1');
     $routes->get('external-locations-list', 'ExternalLocations::listAjax');
+
+    // Rutas para mantenimiento de Solicitudes
+    $routes->get('solicitudes', 'SolicitudReversionController::index');
+    $routes->get('solicitudes',             'SolicitudReversionController::index');
+    $routes->get('solicitudes/(:num)',      'SolicitudReversionController::show/$1');
+    $routes->post('solicitudes/store',      'SolicitudReversionController::store');
+    $routes->post('solicitudes/aprobar',    'SolicitudReversionController::aprobar');
+    $routes->post('solicitudes/denegar',    'SolicitudReversionController::denegar');
+    
+    // Rutas para notificaciones
+    $routes->get('notifications',                   'NotificationController::index');
+$routes->get('notifications-search',            'NotificationController::searchAjax');
+    $routes->post('notifications/marcar-leida', 'NotificationController::marcarLeida');
 });

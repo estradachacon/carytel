@@ -59,8 +59,10 @@ class Permisos extends BaseConfig
         ],
 
         'Solicitudes' => [
-            'invalidar_pago',
-            'invalidar_flete',
+            'solicitar_reversion',
+            'aprobar_reversion',
+            'denegar_reversion',
+            'ver_solicitudes',
         ],
 
         'Reportes' => [
@@ -73,6 +75,7 @@ class Permisos extends BaseConfig
             'ver_almacenamiento',
             'ver_bitacora',
             'ajustes_multimedia',
+            'ver_notificaciones',
         ],
 
         'Gestión de usuarios' => [

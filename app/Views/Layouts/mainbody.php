@@ -147,6 +147,117 @@
         .badge-text-lg {
             font-size: 1rem;
         }
+
+        /* Animación campanita */
+
+        .bell-alert {
+            color: #ffc107 !important;
+            animation: bellShake 1.0s ease-in-out 3;
+        }
+
+        @keyframes bellShake {
+
+            0% {
+                transform: rotate(0);
+            }
+
+            15% {
+                transform: rotate(-15deg);
+            }
+
+            30% {
+                transform: rotate(10deg);
+            }
+
+            45% {
+                transform: rotate(-10deg);
+            }
+
+            60% {
+                transform: rotate(6deg);
+            }
+
+            75% {
+                transform: rotate(-4deg);
+            }
+
+            100% {
+                transform: rotate(0);
+            }
+
+        }
+
+        /* efecto de brillo */
+
+        .bell-glow {
+            text-shadow:
+                0 0 5px rgba(255, 193, 7, 0.7),
+                0 0 10px rgba(255, 193, 7, 0.6),
+                0 0 20px rgba(255, 193, 7, 0.5);
+        }
+
+        /* ===========================
+   NOTIFICACIONES
+=========================== */
+
+        .notif-card {
+            display: flex;
+            gap: 12px;
+            padding: 12px 14px;
+            border-bottom: 1px solid #f1f1f1;
+            transition: all .2s ease;
+
+            width: calc(100% - 10px);
+            /* deja margen */
+            margin: 0 auto;
+        }
+
+        .notif-card:hover {
+            background: #f8f9fa;
+            transform: translateX(4px);
+        }
+
+        .notif-icon {
+            font-size: 18px;
+            color: #ffc107;
+            margin-top: 3px;
+        }
+
+        .notif-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .notif-title {
+            font-weight: 600;
+            font-size: 14px;
+            color: #1d2744;
+        }
+
+        .notif-msg {
+            font-size: 12px;
+            color: #6c757d;
+            white-space: normal;
+            word-break: break-word;
+        }
+
+        .dropdown-menu {
+            border-radius: 10px;
+        }
+
+        .dropdown-header {
+            font-size: 14px;
+            color: #1d2744;
+        }
+
+        .notif-dropdown {
+            width: 420px;
+            max-height: 400px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            /* evita barra lateral */
+            padding: 0;
+        }
     </style>
 </head>
 
@@ -168,6 +279,81 @@
                 </button>
             </div>
             <div class="d-flex align-items-center">
+                <?php if (tienePermiso('ver_notificaciones')): ?>
+    <li class="nav-item dropdown mr-3" style="list-style:none;">
+
+        <a class="nav-link text-white position-relative"
+            href="#"
+            id="notifDropdown"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false">
+
+            <i id="notifBell" class="fa-solid fa-bell fa-lg <?= !empty($notif_contador) && $notif_contador > 0 ? 'bell-alert bell-glow' : '' ?>"></i>
+
+            <span id="notifCount"
+                class="badge badge-danger position-absolute"
+                style="top:-5px; right:-10px; font-size:11px; <?= !empty($notif_contador) && $notif_contador > 0 ? '' : 'display:none;' ?>">
+                <?= $notif_contador ?? 0 ?>
+            </span>
+
+        </a>
+
+        <div class="dropdown-menu dropdown-menu-right shadow notif-dropdown"
+            aria-labelledby="notifDropdown">
+
+            <div class="dropdown-header d-flex align-items-center justify-content-between">
+                <span><i class="fa-solid fa-bell text-primary"></i> Notificaciones</span>
+                <?php if (!empty($notif_contador) && $notif_contador > 0): ?>
+                    <span class="badge badge-danger"><?= $notif_contador ?></span>
+                <?php endif; ?>
+            </div>
+
+            <div id="notifList">
+                <?php if (!empty($notif_lista)): ?>
+                    <?php foreach ($notif_lista as $n): ?>
+                        <a href="<?= esc($n->link ?? '#') ?>"
+                            class="notif-card text-decoration-none"
+                            data-id="<?= $n->id ?>"
+                            style="display:flex;">
+
+                            <div class="notif-icon">
+                                <?php if ($n->tipo === 'reversion'): ?>
+                                    <i class="fa-solid fa-rotate-left text-warning"></i>
+                                <?php elseif ($n->tipo === 'success'): ?>
+                                    <i class="fa-solid fa-circle-check text-success"></i>
+                                <?php elseif ($n->tipo === 'warning'): ?>
+                                    <i class="fa-solid fa-triangle-exclamation text-warning"></i>
+                                <?php else: ?>
+                                    <i class="fa-solid fa-circle-info text-primary"></i>
+                                <?php endif; ?>
+                            </div>
+
+                            <div class="notif-content">
+                                <div class="notif-title"><?= esc($n->titulo) ?></div>
+                                <div class="notif-msg"><?= esc($n->mensaje) ?></div>
+                            </div>
+
+                        </a>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <div class="dropdown-item text-muted text-center py-3">
+                        Sin notificaciones
+                    </div>
+                <?php endif; ?>
+            </div>
+
+            <div class="dropdown-divider"></div>
+
+            <a href="<?= base_url('notifications') ?>"
+                class="dropdown-item text-center text-primary">
+                Ver todas
+            </a>
+
+        </div>
+
+    </li>
+<?php endif; ?>
                 <span class="badge badge-primary mr-3 p-3 badge-text-lg">
                     <?= esc($session->get('user_name') ?? 'N/A') ?>
                 </span>
@@ -245,7 +431,7 @@
     <!--End layoutSidenav-->
     <!-- Bootstrap 4  -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     <!-- Datatable js -->
     <script src="https://cdn.datatables.net/2.3.4/js/dataTables.min.js"></script>
     <!-- Dropify -->
@@ -274,6 +460,41 @@
             document.documentElement.style.setProperty('--tab-active-color', text_color);
         })(jQuery);
     </script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        const contador = <?= (int)($notif_contador ?? 0) ?>
+
+        const bell      = document.getElementById('notifBell')
+        const countBadge = document.getElementById('notifCount')
+
+        if (contador > 0) {
+
+            countBadge.textContent = contador > 99 ? '99+' : contador
+            countBadge.style.display = 'inline-block'
+
+            bell.classList.add('bell-alert', 'bell-glow')
+
+            // quitar animación después de 3 ciclos (~3s)
+            setTimeout(() => {
+                bell.classList.remove('bell-alert', 'bell-glow')
+            }, 3500)
+        }
+
+        // Marcar como leída al hacer click
+        document.querySelectorAll('.notif-card[data-id]').forEach(card => {
+            card.addEventListener('click', function () {
+                const id = this.dataset.id
+                fetch('<?= base_url('notifications/marcar-leida') ?>', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id })
+                })
+            })
+        })
+
+    })
+</script>
     <?= $this->include('Layouts/toast') ?>
 </body>
 
