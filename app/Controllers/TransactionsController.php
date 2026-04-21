@@ -15,16 +15,26 @@ class TransactionsController extends BaseController
         if ($chk !== true) return $chk;
 
         $model = new TransactionModel();
-        $data = [
-            'transactions' => $model->getTransactionsWithAccountName(),
-            'transactions2' => $model->getTransactionsWithAccountNamePaginated(10),
-            'pager'        => $model->pager
-        ];
-        return view('transactions/index', $data);
+
+        $perPage = $this->request->getGet('per_page') ?? 25;
+
+        $transactions = $model
+            ->select('transactions.*, accounts.name as account_name')
+            ->join('accounts', 'accounts.id = transactions.account_id', 'left')
+            ->orderBy('transactions.id', 'DESC')
+            ->paginate($perPage);
+
+        $pager = $model->pager;
+
+        return view('transactions/index', [
+            'transactions' => $transactions,
+            'transactions2' => $transactions, // puedes usar el mismo
+            'pager'        => $pager
+        ]);
     }
 
     public function addSalida()
-    {        
+    {
         helper(['form', 'bitacora', 'account']);
         $session = session();
         $request = service('request');
