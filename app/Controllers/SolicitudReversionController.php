@@ -159,48 +159,139 @@ class SolicitudReversionController extends BaseController
             ]);
         }
 
-        $db      = \Config\Database::connect();
-        $package = $db->table('packages')
-            ->where('id', $solicitud['package_id'])
+        $db = \Config\Database::connect();
+
+        // ===============================
+        // 1️⃣ BUSCAR EL PAGO COMPLETO
+        // ===============================
+
+        $packagePayment = $db->table('package_payments')
+            ->where('package_id', $solicitud['package_id'])
+            ->where('revertido', 0)
+            ->orderBy('id', 'DESC')
             ->get()->getRowArray();
 
-        if (!$package) {
+        if (!$packagePayment) {
             return $this->response->setJSON([
                 'status'  => 'error',
-                'message' => 'Paquete no encontrado.'
+                'message' => 'No se encontró el registro de pago del paquete.'
             ]);
         }
 
-        $metodo    = $package['metodo_remu'] ?? 'cuenta';
-        $monto     = (float) $package['monto'];
-        $packageId = $package['id'];
+        $pagoId = $packagePayment['pago_id'];
+
+        // Traer el pago general
+        $pago = $db->table('pagos')
+            ->where('id', $pagoId)
+            ->get()->getRowArray();
+
+        if (!$pago) {
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => 'Pago no encontrado.'
+            ]);
+        }
+
+        // Traer TODOS los paquetes del pago con su snapshot
+        $todosPaquetes = $db->table('package_payments')
+            ->where('pago_id', $pagoId)
+            ->where('revertido', 0)
+            ->get()->getResultArray();
+
+        $metodo    = $pago['metodo'];
+        $totalNeto = (float) $pago['total_neto'];
 
         $db->transStart();
 
-        // 1. Actualizar solicitud
+        // ===============================
+        // 2️⃣ ACTUALIZAR SOLICITUD
+        // ===============================
+
         $this->solicitudModel->update($solicitudId, [
-            'estatus'     => 'aprobada',
+            'estatus'      => 'aprobada',
             'aprobado_por' => $userId,
-            'comentario'  => $comentario,
+            'comentario'   => $comentario,
         ]);
 
-        // 2. Revertir estados del paquete
-        $db->table('packages')->where('id', $packageId)->update([
-            'estatus'               => 'entregado',
-            'estatus2'               => null,
-            'fecha_remu'             => null,
-            'metodo_remu'            => null,
-            'remunerado_con_cuenta'  => null,
-            'remu_user_id'           => null,
-            'updated_at'             => date('Y-m-d H:i:s'),
-        ]);
+        // ===============================
+        // 3️⃣ REVERTIR CADA PAQUETE SEGÚN SU TIPO
+        // ===============================
 
-        // 3. Revertir según método de pago original
+        foreach ($todosPaquetes as $pp) {
+
+            $tipo                 = $pp['tipo'];
+            $flete_pagado_antes   = (float) $pp['flete_pagado_antes'];
+            $flete_pendiente_antes = (float) $pp['flete_pendiente_antes'];
+
+            if ($tipo === 'solo_flete') {
+                // ✅ Solo restaurar flete — no tocar estatus ni amount_paid
+                $db->table('packages')
+                    ->where('id', $pp['package_id'])
+                    ->update([
+                        'flete_pagado'    => $flete_pagado_antes,
+                        'flete_pendiente' => $flete_pendiente_antes,
+                        'updated_at'      => date('Y-m-d H:i:s'),
+                    ]);
+            } elseif ($tipo === 'con_descuento_flete') {
+                // ✅ Revertir pago + restaurar flete
+                $db->table('packages')
+                    ->where('id', $pp['package_id'])
+                    ->update([
+                        'estatus'               => 'entregado',
+                        'estatus2'              => null,
+                        'fecha_remu'            => null,
+                        'metodo_remu'           => null,
+                        'remunerado_con_cuenta' => null,
+                        'remu_user_id'          => null,
+                        'amount_paid'           => 0,
+                        'flete_pagado'          => $flete_pagado_antes,
+                        'flete_pendiente'       => $flete_pendiente_antes,
+                        'updated_at'            => date('Y-m-d H:i:s'),
+                    ]);
+            } else {
+                // ✅ normal — revertir pago, flete no se toca
+                $db->table('packages')
+                    ->where('id', $pp['package_id'])
+                    ->update([
+                        'estatus'               => 'entregado',
+                        'estatus2'              => null,
+                        'fecha_remu'            => null,
+                        'metodo_remu'           => null,
+                        'remunerado_con_cuenta' => null,
+                        'remu_user_id'          => null,
+                        'amount_paid'           => 0,
+                        'updated_at'            => date('Y-m-d H:i:s'),
+                    ]);
+            }
+
+            // 📸 Marcar package_payment como revertido
+            $db->table('package_payments')
+                ->where('id', $pp['id'])
+                ->update([
+                    'revertido'    => 1,
+                    'revertido_at' => date('Y-m-d H:i:s'),
+                ]);
+        }
+
+        // ===============================
+        // 4️⃣ MARCAR PAGO COMO ANULADO
+        // ===============================
+
+        $db->table('pagos')
+            ->where('id', $pagoId)
+            ->update([
+                'anulado'    => 1,
+                'anulado_at' => date('Y-m-d H:i:s'),
+                'anulado_by' => $userId,
+            ]);
+
+        // ===============================
+        // 5️⃣ REVERTIR MOVIMIENTO FINANCIERO
+        // ===============================
+
         if ($metodo === 'cuenta') {
 
-            $cuentaId = !empty($package['remunerado_con_cuenta']) 
-                ? (int) $package['remunerado_con_cuenta'] 
-                : 1;
+            $cuentaId = (int) $pago['cuenta_id'];
 
             $account = $db->table('accounts')
                 ->where('id', $cuentaId)
@@ -214,22 +305,21 @@ class SolicitudReversionController extends BaseController
                 ]);
             }
 
-            // Devolver el dinero a la cuenta
+            // Devolver el neto a la cuenta
             $db->table('accounts')
                 ->where('id', $cuentaId)
-                ->set('balance', "balance + {$monto}", false)
+                ->set('balance', "balance + {$totalNeto}", false)
                 ->update();
 
             registrarEntrada(
                 $cuentaId,
-                $monto,
-                "Reversión de remuneración — Paquete #{$packageId}",
+                $totalNeto,
+                "Reversión de remuneración — Pago #{$pagoId}",
                 "Solicitud de reversión aprobada #{$solicitudId}",
                 '-'
             );
         } elseif ($metodo === 'caja') {
 
-            // Buscar sesión de caja abierta del usuario que aprueba
             $cashierSession = $db->table('cashier_sessions')
                 ->where('status', 'open')
                 ->where('user_id', $userId)
@@ -247,7 +337,7 @@ class SolicitudReversionController extends BaseController
                 ->where('id', $cashierSession['cashier_id'])
                 ->get()->getRowArray();
 
-            $newBalance = (float)$cashier['current_balance'] + $monto;
+            $newBalance = (float) $cashier['current_balance'] + $totalNeto;
 
             $db->table('cashier')
                 ->where('id', $cashier['id'])
@@ -260,9 +350,9 @@ class SolicitudReversionController extends BaseController
                 'user_id'            => $userId,
                 'branch_id'          => session()->get('branch_id'),
                 'type'               => 'in',
-                'amount'             => $monto,
+                'amount'             => $totalNeto,
                 'balance_after'      => $newBalance,
-                'concept'            => "Reversión remuneración — Paquete #{$packageId}",
+                'concept'            => "Reversión remuneración — Pago #{$pagoId}",
                 'reference_type'     => 'Remuneraciones',
                 'created_at'         => date('Y-m-d H:i:s'),
             ]);
@@ -280,8 +370,9 @@ class SolicitudReversionController extends BaseController
         registrar_bitacora(
             'Aprobar reversión',
             'Solicitudes',
-            "Aprobó reversión de pago del paquete #{$packageId} — Método: {$metodo}",
-            $solicitudId
+            "Aprobó reversión del pago #{$pagoId} — Método: {$metodo} — Paquetes: " .
+                implode(', ', array_column($todosPaquetes, 'package_id')),
+            $userId
         );
 
         return $this->response->setJSON([

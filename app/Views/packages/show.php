@@ -534,43 +534,161 @@ function formatDateDMY($fecha)
 <script>
     const btnRevertir = document.getElementById('btnRevertirPago')
     if (btnRevertir) {
-        btnRevertir.addEventListener('click', function() {
-            const id = this.dataset.id
+        btnRevertir.addEventListener('click', async function() {
+            const packageId = this.dataset.id
 
+            // ── 1. Mostrar loading mientras carga el detalle ──
             Swal.fire({
+                title: 'Cargando detalle del pago...',
+                allowOutsideClick: false,
+                didOpen: () => Swal.showLoading()
+            })
+
+            let detalle
+            try {
+                const res = await fetch(`<?= base_url('pagos/detalle-por-paquete/') ?>${packageId}`)
+                detalle = await res.json()
+            } catch (e) {
+                Swal.fire('Error', 'No se pudo obtener el detalle del pago.', 'error')
+                return
+            }
+
+            if (!detalle.success) {
+                Swal.fire('Error', detalle.message, 'error')
+                return
+            }
+
+            const {
+                pago,
+                paquetes
+            } = detalle
+
+            // ── 2. Construir tabla de paquetes ──
+            const metodoBadge = pago.metodo === 'caja' ?
+                '<span class="badge badge-success">Caja</span>' :
+                '<span class="badge badge-primary">Cuenta</span>'
+
+            const filasPaquetes = paquetes.map(p => {
+                const monto = parseFloat(p.monto_original).toFixed(2)
+                const pagado = parseFloat(p.monto_pagado).toFixed(2)
+                const flete = parseFloat(p.flete_descontado).toFixed(2)
+                const esOrigen = p.package_id == detalle.package_id_orig
+
+                // Badge de tipo
+                let tipoBadge = ''
+                if (p.tipo === 'solo_flete') {
+                    tipoBadge = `<span class="badge badge-info">Solo cobro flete: $${flete}</span>`
+                } else if (p.tipo === 'con_descuento_flete') {
+                    tipoBadge = `<span class="badge badge-warning">Pagado + descuento flete: $${flete}</span>`
+                } else {
+                    tipoBadge = `<span class="badge badge-light">Normal</span>`
+                }
+
+                // Resaltar el paquete que originó la solicitud
+                const rowStyle = esOrigen ? 'background:#fff3cd;' : ''
+                const origenBadge = esOrigen ?
+                    `<span class="badge badge-warning ml-1" style="font-size:0.7rem;">Solicitado</span>` :
+                    ''
+
+                return `
+        <tr style="${rowStyle}">
+            <td>
+                #${p.package_id}
+                ${origenBadge}
+            </td>
+            <td>${p.cliente ?? '—'}</td>
+            <td>
+                <small class="text-muted d-block">Original: $${monto}</small>
+                <strong>Pagado: $${pagado}</strong>
+            </td>
+            <td>${tipoBadge}</td>
+        </tr>`
+            }).join('')
+
+            // ── 3. Mostrar Sweet Alert con detalle completo ──
+            const {
+                isConfirmed,
+                value
+            } = await Swal.fire({
                 title: 'Solicitar reversión de pago',
-                html: `
-                    <div style="text-align:left; overflow-y:auto;">
-
-                        <div style="margin-bottom:12px;">
-                            <label style="font-weight:350; font-size:0.9rem; color:#555;">
-                                Motivo de la solicitud
-                            </label>
-                            <textarea id="motivoReversion"
-                                class="swal2-textarea"
-                                placeholder="Describe el motivo de la reversión..."
-                                style="width:80%; margin-top:4px; resize:vertical;"></textarea>
-                        </div>
-
-                        <div>
-                            <label style="font-weight:600; font-size:0.9rem; color:#555;">
-                                Confirma tu contraseña
-                            </label>
-                            <input id="passwordReversion"
-                                type="password"
-                                class="swal2-input"
-                                placeholder="Tu contraseña"
-                                style="width:80%; margin-top:4px;">
-                        </div>
-
-                    </div>
-                `,
-                width: '500px',
+                width: '600px',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Enviar solicitud',
                 cancelButtonText: 'Cancelar',
                 confirmButtonColor: '#e0a800',
+                html: `
+                <div style="text-align:left; font-size:0.9rem;">
+
+                    <div class="alert alert-warning mb-3" style="font-size:0.85rem;">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <strong>Atención:</strong> Este paquete forma parte de un pago grupal.
+                        La reversión afectará <strong>todos los paquetes listados abajo</strong>.
+                    </div>
+
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            <small class="text-muted">Vendedor</small>
+                            <div><strong>${pago.vendedor}</strong></div>
+                        </div>
+                        <div class="col-6">
+                            <small class="text-muted">Método de pago</small>
+                            <div>${metodoBadge}</div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-4">
+                            <small class="text-muted">Total bruto</small>
+                            <div><strong>$${parseFloat(pago.total_bruto).toFixed(2)}</strong></div>
+                        </div>
+                        <div class="col-4">
+                            <small class="text-muted">Fletes descontados</small>
+                            <div class="text-danger"><strong>-$${parseFloat(pago.total_flete).toFixed(2)}</strong></div>
+                        </div>
+                        <div class="col-4">
+                            <small class="text-muted">Neto pagado</small>
+                            <div class="text-success"><strong>$${parseFloat(pago.total_neto).toFixed(2)}</strong></div>
+                        </div>
+                    </div>
+
+                    <table class="table table-sm table-bordered mb-3">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>#</th>
+                                <th>Cliente</th>
+                                <th>Monto</th>
+                                <th>Tipo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${filasPaquetes}
+                        </tbody>
+                    </table>
+
+                    <div style="margin-bottom:12px;">
+                        <label style="font-weight:600; font-size:0.9rem; color:#555;">
+                            Motivo de la solicitud
+                        </label>
+                        <textarea id="motivoReversion"
+                            class="swal2-textarea"
+                            placeholder="Describe el motivo de la reversión..."
+                            style="width:90%; margin-top:4px; resize:vertical;"></textarea>
+                    </div>
+
+                    <div>
+                        <label style="font-weight:600; font-size:0.9rem; color:#555;">
+                            Confirma tu contraseña
+                        </label>
+                        <input id="passwordReversion"
+                            type="password"
+                            class="swal2-input"
+                            placeholder="Tu contraseña"
+                            style="width:90%; margin-top:4px;">
+                    </div>
+
+                </div>
+            `,
                 preConfirm: () => {
                     const motivo = document.getElementById('motivoReversion').value.trim()
                     const password = document.getElementById('passwordReversion').value.trim()
@@ -579,7 +697,6 @@ function formatDateDMY($fecha)
                         Swal.showValidationMessage('El motivo es obligatorio')
                         return false
                     }
-
                     if (!password) {
                         Swal.showValidationMessage('Debes confirmar tu contraseña')
                         return false
@@ -590,30 +707,39 @@ function formatDateDMY($fecha)
                         password
                     }
                 }
-            }).then(result => {
-                if (!result.isConfirmed) return
-
-                fetch("<?= base_url('solicitudes/store') ?>", {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            package_id: id,
-                            motivo: result.value.motivo,
-                            password: result.value.password
-                        })
-                    })
-                    .then(r => r.json())
-                    .then(data => {
-                        if (data.status !== 'ok') {
-                            Swal.fire('Error', data.message, 'error')
-                            return
-                        }
-                        Swal.fire('Solicitud enviada', 'Se notificará a los administradores.', 'success')
-                            .then(() => location.reload())
-                    })
             })
+
+            if (!isConfirmed) return
+
+            // ── 4. Enviar solicitud ──
+            try {
+                const res = await fetch("<?= base_url('solicitudes/store') ?>", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        package_id: packageId,
+                        motivo: value.motivo,
+                        password: value.password
+                    })
+                })
+                const data = await res.json()
+
+                if (data.status !== 'ok') {
+                    Swal.fire('Error', data.message, 'error')
+                    return
+                }
+
+                Swal.fire(
+                    'Solicitud enviada',
+                    'Se notificará a los administradores para revisar el pago completo.',
+                    'success'
+                ).then(() => location.reload())
+
+            } catch (e) {
+                Swal.fire('Error', 'No se pudo enviar la solicitud.', 'error')
+            }
         })
     }
     document.getElementById('togglePagoParcial').addEventListener('change', function() {

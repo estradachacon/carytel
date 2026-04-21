@@ -302,7 +302,7 @@
         <div class="dropdown-menu dropdown-menu-right shadow notif-dropdown"
             aria-labelledby="notifDropdown">
 
-            <div class="dropdown-header d-flex align-items-center justify-content-between">
+            <div class="dropdown-header d-flex justify-content-between">
                 <span><i class="fa-solid fa-bell text-primary"></i> Notificaciones</span>
                 <?php if (!empty($notif_contador) && $notif_contador > 0): ?>
                     <span class="badge badge-danger"><?= $notif_contador ?></span>

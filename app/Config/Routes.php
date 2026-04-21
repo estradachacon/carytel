@@ -207,6 +207,7 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {    // Grupo del Da
     $routes->post('solicitudes/store',      'SolicitudReversionController::store');
     $routes->post('solicitudes/aprobar',    'SolicitudReversionController::aprobar');
     $routes->post('solicitudes/denegar',    'SolicitudReversionController::denegar');
+    $routes->get('pagos/detalle-por-paquete/(:num)', 'PaymentController::detallePagoPorPaquete/$1');
     
     // Rutas para notificaciones
     $routes->get('notifications',                   'NotificationController::index');
