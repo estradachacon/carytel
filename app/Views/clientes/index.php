@@ -73,7 +73,7 @@
                 <!-- 💻 DESKTOP TABLA -->
                 <div class="d-none d-md-block">
                     <div class="table-responsive">
-                        <table class="table table-hover align-middle">
+                        <table class="table table-bordered table-hover align-middle">
 
                             <thead class="table-light">
                                 <tr>
@@ -198,5 +198,46 @@
         });
 
     });
+</script>
+<script>
+    document.querySelectorAll('.btn-delete-cliente').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            const id = this.dataset.id;
+
+            Swal.fire({
+                title: '¿Eliminar cliente?',
+                text: 'Esta acción no se puede deshacer',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '/clientes/delete/' + id;
+                }
+            });
+        });
+    });
+</script>
+<script>
+document.getElementById('searchInput').addEventListener('input', function () {
+    let term = this.value.toLowerCase();
+
+    // 📱 MOBILE (cards)
+    document.querySelectorAll('.d-md-none .card').forEach(card => {
+        let text = card.innerText.toLowerCase();
+        card.style.display = text.includes(term) ? '' : 'none';
+    });
+
+    // 💻 DESKTOP (tabla)
+    document.querySelectorAll('.cliente-row').forEach(row => {
+        let text = row.innerText.toLowerCase();
+        row.style.display = text.includes(term) ? '' : 'none';
+    });
+});
 </script>
 <?= $this->endSection() ?>

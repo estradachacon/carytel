@@ -56,61 +56,7 @@
                             <select id="clienteSelect" class="form-control"></select>
                         </div>
                         <div class="col-md-2">
-                            <small class="text-muted">N° Factura</small>
-                            <input
-                                type="text"
-                                id="numeroFactura"
-                                class="form-control"
-                                placeholder="Ej: 000123">
-                        </div>
-                        <div class="col-md-4">
-                            <small class="text-muted">Vendedor</small>
-                            <select id="sellerSelect" class="form-control"></select>
-                        </div>
-
-                        <div class="col-md-2">
-                            <small class="text-muted">Estado</small>
-                            <select name="estado" class="form-control">
-                                <option value="">Todos</option>
-                                <option value="activa">Activas</option>
-                                <option value="anulada">Anuladas</option>
-                                <option value="pagada">Pagadas</option>
-                            </select>
-                        </div>
-
-                        <div class="col-md-4">
-                            <small class="text-muted">Tipo documento</small>
-                            <select name="tipo_dte" class="form-control">
-                                <option value="">Todos</option>
-
-                                <?php
-                                $siglas = dte_siglas();
-                                $descripciones = dte_descripciones();
-                                ?>
-
-                                <?php foreach ($siglas as $key => $sigla): ?>
-                                    <?php $nombre = $descripciones[$sigla] ?? $sigla; ?>
-
-                                    <option value="<?= $key ?>">
-                                        <?= esc($sigla . ' - ' . $nombre) ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <small class="text-muted">Tipo venta</small>
-                            <select name="tipo_venta" id="tipoVentaSelect" class="form-control">
-                                <option value="">Todos</option>
-
-                                <?php foreach ($tiposVenta as $tv): ?>
-                                    <option value="<?= $tv->id ?>">
-                                        <?= esc($tv->nombre_tipo_venta) ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <small class="text-muted">Fecha emisión</small>
+                            <small class="text-muted">Fecha recepción</small>
                             <input
                                 type="text"
                                 name="fecha"
@@ -124,13 +70,10 @@
                 <table class="table table-striped table-bordered table-hover">
                     <thead>
                         <tr>
-                            <th>Correlativo</th>
-                            <th class="col-2">Tipo DOC</th>
+                            <th class="text-center">ID</th>
                             <th class="col-3">Cliente</th>
-                            <th>Fecha/Hora</th>
-                            <th class="col-1">Condición</th>
-                            <th class="col-1">Total</th>
-                            <th class="col-1">Saldo</th>
+                            <th>Fecha/Hora Recepción</th>
+                            <th class="col-1">Tamaño</th>
                             <th class="col-1">Estado</th>
                             <th class="col-1">Menú</th>
                         </tr>
@@ -139,6 +82,7 @@
                         <?php if (!empty($facturas)): ?>
                             <?php foreach ($facturas as $factura): ?>
                                 <tr>
+                                    <td><?= esc($factura->id) ?></td>
                                     <td class="text-center">
                                         <?= esc(substr($factura->numero_control, -6)) ?>
                                     </td>
