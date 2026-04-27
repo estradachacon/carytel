@@ -65,7 +65,6 @@ class TransactionsController extends BaseController
         // Registrar SALIDA
         $transaction->insert([
             'account_id'  => $accountId,
-            'tracking_id' => null,
             'tipo'        => 'salida',
             'monto'       => $monto,
             'origen'      => $origen,

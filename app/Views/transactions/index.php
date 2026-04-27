@@ -60,7 +60,6 @@
                                         <?php if (!empty($t->referencia) || !empty($t->tracking_id)): ?>
                                             <div class="d-flex justify-content-between mt-1" style="font-size: 0.7rem;">
                                                 <span class="text-muted">Ref: <?= esc($t->referencia ?: '—') ?></span>
-                                                <span class="text-muted">Track: <?= esc($t->tracking_id ?: '—') ?></span>
                                             </div>
                                         <?php endif; ?>
                                     </div>
@@ -124,40 +123,50 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header bg-success text-white">
-                <h5 class="modal-title" id="modalRegistroGastoLabel"><i class="fa-solid fa-file-invoice-dollar"></i> Registrar Nuevo Gasto/Salida</h5>
-                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <h5 class="modal-title" id="modalRegistroGastoLabel">
+                    <i class="fa-solid fa-file-invoice-dollar"></i> Registrar Nuevo Gasto/Salida
+                </h5>
+
+                <!-- ✅ Bootstrap 5 -->
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+
             <form id="form-registro-gasto">
                 <div class="modal-body">
+
                     <div class="mb-3">
                         <label for="gastoFecha" class="form-label">Fecha del Movimiento</label>
                         <input type="date" class="form-control" id="gastoFecha" name="gastoFecha" required value="<?= date('Y-m-d') ?>">
                     </div>
-                    <div class="mt-3 divAccount" id="gastoCuenta<?= esc($q['id'] ?? '') ?>">
+
+                    <div class="mb-3">
                         <label class="form-label">Cuenta</label>
                         <select name="account"
                             id="account"
-                            class="form-control select2-account"
-                            data-initial-id=""
-                            data-initial-text="">
+                            class="form-select select2-account">
                         </select>
                     </div>
+
                     <div class="mb-3">
                         <label for="gastoMonto" class="form-label">Monto del Gasto ($)</label>
-                        <input type="number" step="0.01" class="form-control" id="gastoMonto" name="gastoMonto" placeholder="Ej: 15.50" required>
+                        <input type="number" step="0.01" class="form-control" id="gastoMonto" name="gastoMonto" required>
                     </div>
+
                     <div class="mb-3">
                         <label for="gastoDescripcion" class="form-label">Concepto / Descripción</label>
                         <textarea class="form-control" id="gastoDescripcion" name="gastoDescripcion" rows="2" required></textarea>
                     </div>
-                    <div class="alert alert-info mt-3" role="alert">
-                        Al presionar "Guardar Gasto", se registrará una transacción de **SALIDA** de la cuenta seleccionada.
+
+                    <div class="alert alert-info mt-3">
+                        Al presionar "Guardar Gasto", se registrará una transacción de <strong>SALIDA</strong>.
                     </div>
+
                 </div>
+
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <!-- ✅ Bootstrap 5 -->
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+
                     <button type="submit" class="btn btn-success" id="btn-guardar-gasto">
                         <i class="fa-solid fa-save"></i> Guardar Gasto
                     </button>
@@ -169,9 +178,9 @@
 <script>
     const accountSearchUrl = "<?= base_url('accounts-list') ?>";
     $(document).ready(function() {
-        $.fn.modal.Constructor.prototype._enforceFocus = function() {};
         $('#account').select2({
-            theme: 'bootstrap4',
+            dropdownParent: $('#modalRegistroGasto'), // 🔥 CLAVE
+            theme: 'bootstrap-5',
             width: '100%',
             placeholder: 'Buscar cuenta...',
             allowClear: true,
@@ -194,7 +203,7 @@
                     };
                 }
             }
-        }).trigger('change');
+        });
     });
 </script>
 <script>

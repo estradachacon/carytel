@@ -6,7 +6,7 @@
             <div class="card-header d-flex">
                 <h4 class="header-title">Listado de Cuentas</h4>
                 <?php if (tienePermiso('registrar_transferencia')): ?>
-                    <button class="btn btn-warning btn-sm ml-auto" data-toggle="modal" data-target="#transferModal">
+                    <button class="btn btn-warning btn-sm ms-auto" data-bs-toggle="modal" data-bs-target="#transferModal">
                         <i class="fa-solid fa-exchange-alt"></i> Realizar Transferencia
                     </button>
                 <?php endif; ?>
@@ -63,51 +63,60 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="transferModal" tabindex="-1" role="dialog" aria-labelledby="transferModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+<div class="modal fade" id="transferModal" tabindex="-1" aria-labelledby="transferModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
         <div class="modal-content">
+
             <div class="modal-header">
-                <h5 class="modal-title" id="transferModalLabel">Hacer Transferencia</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <h5 class="modal-title" id="transferModalLabel">
+                    <i class="fa-solid fa-exchange-alt"></i> Hacer Transferencia
+                </h5>
+
+                <!-- ✅ BS5 -->
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body">
-                <form id="transferForm" action="<?= base_url('accounts-transfer') ?>" method="post">
-                    <div class="mt-3 divAccount" id="gastoCuenta<?= esc($q['id'] ?? '') ?>">
+
+            <form id="transferForm">
+                <div class="modal-body">
+
+                    <!-- Cuenta origen -->
+                    <div class="mb-3">
                         <label class="form-label">Cuenta inicial</label>
                         <select name="account_source"
                             id="account_source"
-                            class="form-control select2-account"
-                            data-initial-id=""
-                            data-initial-text="">
+                            class="form-select select2-account">
                         </select>
                     </div>
 
                     <!-- Cuenta destino -->
-                    <div class="form-group mt-3">
-                        <label for="cuentaDestino">Cuenta Destino</label>
+                    <div class="mb-3">
+                        <label class="form-label">Cuenta destino</label>
                         <select name="account_destination"
                             id="account_destination"
-                            class="form-control select2-account"
-                            data-initial-id=""
-                            data-initial-text="">
+                            class="form-select select2-account">
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label for="montoTransferir">Monto</label>
-                        <input type="number" class="form-control" id="montoTransferir" name="monto" min="0.01" step="0.01" required>
+
+                    <div class="mb-3">
+                        <label class="form-label">Monto</label>
+                        <input type="number" class="form-control" name="monto" min="0.01" step="0.01" required>
                     </div>
-                    <div class="form-group">
-                        <label for="descripcionTransferencia">Descripción</label>
-                        <input type="text" class="form-control" id="descripcionTransferencia" name="descripcion" required>
+
+                    <div class="mb-3">
+                        <label class="form-label">Descripción</label>
+                        <input type="text" class="form-control" name="descripcion" required>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-success">Realizar Transferencia</button>
-                    </div>
-                </form>
-            </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fa-solid fa-check"></i> Transferir
+                    </button>
+                </div>
+            </form>
+
         </div>
     </div>
 </div>
@@ -152,15 +161,14 @@
     });
 
     $(document).ready(function() {
-        $.fn.modal.Constructor.prototype._enforceFocus = function() {};
-        // Interceptar SOLO los forms de agregar destino
+
         $('.select2-account').select2({
-            theme: 'bootstrap4',
+            dropdownParent: $('#transferModal'), // 🔥 CLAVE
+            theme: 'bootstrap-5',
             width: '100%',
             placeholder: 'Buscar cuenta...',
             allowClear: true,
             minimumInputLength: 1,
-            dropdownParent: $('#transferModal'), // importante dentro del modal
             ajax: {
                 url: accountSearchUrl,
                 dataType: 'json',
@@ -170,7 +178,6 @@
                         q: params.term
                     };
                 },
-
                 processResults: function(data) {
                     return {
                         results: data.map(item => ({
