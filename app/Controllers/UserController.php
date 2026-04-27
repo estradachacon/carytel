@@ -5,20 +5,14 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use CodeIgniter\HTTP\ResponseInterface;
 use App\Models\UserModel;
-use App\Services\PushService;
 
 class UserController extends BaseController
 {
-    protected $cashierModel;
-    protected $branchModel;
     protected $userModel;
     protected $roleModel;
 
     public function __construct()
     {
-        // Inicializa los modelos para su uso en las funciones
-        $this->cashierModel = new \App\Models\CashierModel();
-        $this->branchModel = new \App\Models\BranchModel();
         $this->userModel = new UserModel();
         $this->roleModel = new \App\Models\RoleModel();
     }
@@ -31,9 +25,8 @@ class UserController extends BaseController
         $userModel = new UserModel();
 
         $users = $userModel
-            ->select('users.id, users.user_name, users.email, roles.nombre AS role_name, branches.branch_name AS branch_name')
+            ->select('users.id, users.user_name, users.email, roles.nombre AS role_name')
             ->join('roles', 'roles.id = users.role_id')
-            ->join('branches', 'branches.id = users.branch_id')
             ->findAll();
 
         // 3. Preparamos los datos para la vista.
@@ -49,14 +42,11 @@ class UserController extends BaseController
     {
         $chk = requerirPermiso('crear_usuarios');
         if ($chk !== true) return $chk;
-
-        $branches = $this->branchModel->findAll();
         $roles = $this->roleModel->findAll();
         $users = $this->userModel->findAll();
 
         $data = [
             'title' => 'Crear usuario',
-            'branches' => $branches,
             'roles' => $roles,
             'users' => $users
         ];
@@ -80,7 +70,6 @@ class UserController extends BaseController
             'email' => $this->request->getPost('email'),
             'user_password' => $hashedPassword,
             'role_id' => $this->request->getPost('role_id'),
-            'branch_id' => $this->request->getPost('branch_id'),
         ];
 
         $this->userModel->insert($data);
@@ -102,14 +91,10 @@ class UserController extends BaseController
         if (!$users) {
             return redirect()->to('/users')->with('error', 'Usuario no encontrado.');
         }
-
-        // 2. Obtener la lista de ramas y usuarios (para los dropdowns)
-        $branches = $this->branchModel->findAll();
         $roles = $this->roleModel->findAll();
 
         $data = [
             'user' => $users,
-            'branches' => $branches,
             'roles' => $roles,
         ];
 
@@ -126,7 +111,6 @@ class UserController extends BaseController
             !$this->validate([
                 'user_name' => 'required|min_length[3]|max_length[100]',
                 'email' => 'required|min_length[3]|max_length[100]',
-                'branch_id' => 'required|integer',
                 'role_id' => 'required|integer',
             ])
         ) {
@@ -138,7 +122,6 @@ class UserController extends BaseController
         $data = [
             'user_name' => $this->request->getPost('user_name'),
             'email' => $this->request->getPost('email'),
-            'branch_id' => $this->request->getPost('branch_id'),
             'role_id' => $this->request->getPost('role_id'),
         ];
 
@@ -148,8 +131,6 @@ class UserController extends BaseController
         }
 
         $this->userModel->update($id, $data);
-        
-        PushService::send('sync_users');
         
         registrar_bitacora(
             'Editar usuario',

@@ -68,7 +68,7 @@ class AuthController extends BaseController
                 'message' => 'Usuario inactivo.'
             ]);
         }
-        $user_complete = $userModel->getUserWithRoleAndBranch($user['email']);
+        $user_complete = $userModel->getUserWithRole($user['email']);
         $permisos = $permisoModel->getPermisosPorRol($user['role_id']);
 
         $sessionData = [
@@ -77,9 +77,6 @@ class AuthController extends BaseController
             'email' => $user_complete['email'],
             'foto' => $user_complete['foto'] ?? null,
             'role_id' => $user_complete['role_id'],
-            'branch_id' => $user_complete['branch_id'],
-            'branch_name' => $user_complete['branch_name'],
-            'branch_direction' => $user_complete['branch_direction'],
             'permisos' => array_column($permisos, 'habilitado', 'nombre_accion'),
             'isLoggedIn' => true,
             'logged_in' => true

@@ -34,15 +34,7 @@
                                 <?php endforeach; ?>
                             </select>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="branch_id" class="form-label">Asignar sucursal</label>
-                            <select class="form-select" id="branch_id" name="branch_id" required>
-                                <option value="">Seleccione una sucursal</option>
-                                <?php foreach ($branches as $branch): ?>
-                                    <option value="<?= esc($branch->id) ?>"><?= esc($branch->branch_name) ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
+                        
                     </div>
                     <div class="text-end">
                         <button type="submit" class="btn btn-primary">Crear usuario</button>

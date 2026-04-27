@@ -30,13 +30,6 @@ class Transactions extends Migration
                 'comment'        => 'FK a la sesión de caja activa que realizó el movimiento. Null si es movimiento de banco/ajuste.',
             ],
 
-            'tracking_id' => [
-                'type' => 'INT',
-                'constraint' => 11,
-                'unsigned' => true,
-                'null' => true
-            ],
-
             'tipo' => [
                 'type' => 'ENUM',
                 'constraint' => ['entrada', 'salida'],

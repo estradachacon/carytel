@@ -9,18 +9,6 @@
                         class="fa-solid fa-plus"></i> Crear usuario</a>
             </div>
             <div class="card-body">
-                <div class="row">
-                    <div class="col-lg-3 mb-2">
-                        <label>Tipo de usuario</label>
-                        <select class="form-control select2 select-filter" data-placeholder="Seleccione una opción"
-                            name="status" multiple="true">
-                            <option value="Gerente">Gerente</option>
-                            <option value="Pagador">Pagador</option>
-                            <option value="Digitador">Digitador</option>
-                            <option value="Motorista">Motorista</option>
-                        </select>
-                    </div>
-                </div>
                 <table class="table table-bordered" id="users-table">
                     <thead>
                         <tr>
@@ -28,7 +16,6 @@
                             <th>Nombre de Usuario</th>
                             <th>Email</th>
                             <th class="col-1">Rol</th>
-                            <th class="col-1">Sucursal</th>
                             <th class="col-1 text-center">Acciones</th>
                         </tr>
                     </thead>
@@ -71,7 +58,6 @@
                                             <?= $roleName ?>
                                         </span>
                                     </td>
-                                    <td><?= esc($user['branch_name']) ?></td>
                                     <td class="text-center">
                                         <a href="<?= base_url('users/edit/' . $user['id']) ?>" class="btn btn-sm btn-info"
                                             title="Editar"><i class="fa-solid fa-edit"></i></a>

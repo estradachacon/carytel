@@ -17,12 +17,14 @@ class UserModel extends Model
         return $this->where('email', $email)->first();
     }
 
-    public function getUserWithRoleAndBranch($email)
+    public function getUserWithRole($email)
     {
-        return $this->select('users.*, roles.nombre AS role_name, branches.branch_name, branches.branch_direction')
-                    ->join('roles', 'roles.id = users.role_id')
-                    ->join('branches', 'branches.id = users.branch_id', 'left') // LEFT JOIN para ser más seguro
-                    ->where('users.email', $email)
-                    ->first();
+        return $this->select('
+                users.*,
+                roles.nombre AS role_name
+            ')
+            ->join('roles', 'roles.id = users.role_id')
+            ->where('users.email', $email)
+            ->first();
     }
 }
