@@ -16,6 +16,17 @@ class Permisos extends BaseConfig
             'registrar_transferencia',
         ],
 
+        'clientes' => [
+            'ver_clientes',
+            'crear_clientes',
+            'editar_clientes',
+            'eliminar_clientes',
+        ],
+
+        'BackUps Automaticos' => [
+            'ver_backups',
+        ],
+
         'Ajustes del sistema' => [
             'ver_configuracion',
             'ver_almacenamiento',

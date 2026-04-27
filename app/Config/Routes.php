@@ -89,6 +89,16 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {    // Grupo del Da
     $routes->get('cashiers/summary/(:num)', 'CashierController::summary/$1');
     $routes->post('cashiers/close', 'CashierController::close');
 
+    $routes->group('clientes', function ($routes) {
+        $routes->get('/', 'ClientesController::index');
+        $routes->get('new', 'ClientesController::new');
+        $routes->post('create', 'ClientesController::create');
+        $routes->get('edit/(:num)', 'ClientesController::edit/$1');
+        $routes->post('update/(:num)', 'ClientesController::update/$1');
+        $routes->get('delete/(:num)', 'ClientesController::delete/$1');
+        $routes->get('buscar', 'ClientesController::buscar');
+    });
+
     // Módulo de mantenimiento de usuarios
     $routes->presenter('users', ['controller' => 'UserController', 'only' => ['index', 'new', 'create', 'edit', 'update']]);
     $routes->post('users/delete', 'UserController::delete');
@@ -140,37 +150,6 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {    // Grupo del Da
     $routes->delete('/colonias/delete/(:num)', 'Colonias::delete/$1');
     $routes->post('/colonias/create', 'Colonias::create');
 
-
-    // Módulo de mantenimiento de paquetes
-    $route['upload-paquete'] = 'PackageController/subirImagen';
-    $routes->post('packages/store', 'PackageController::store');
-
-    $routes->get('packages/quickload', 'PackageController::quickLoad');
-    $routes->post('packages/quickstore', 'PackageController::quickStore');
-    $routes->post('packages/updateFlete', 'PackageController::updateFlete');
-    $routes->post('packages/updatePagoParcial', 'PackageController::updatePagoParcial');
-    $routes->post('packages/updateFleteCompleto', 'PackageController::updateFleteCompleto');
-    $routes->post('packages/updateVendedor', 'PackageController::updateVendedor');
-
-    $routes->post('packages-setDestino', 'PackageController::setDestino');
-    $routes->post('packages-setReenvio', 'PackageController::setReenvio');
-    $routes->post('packages-devolver/(:num)', 'PackageController::devolver/$1');
-    $routes->post('packages-entregar/(:num)', 'PackageController::entregar/$1');
-    $routes->get('packages-getDestinoInfo/(:num)', 'PackageController::getDestinoInfo/$1');
-    $routes->get('packages/return', 'PackageController::showReturnPackages');
-    $routes->post('packages/no-retirado/(:num)', 'PackageController::marcarNoRetirado/$1');
-    $routes->presenter('packages', ['controller' => 'PackageController', 'only' => ['index', 'new', 'create', 'edit', 'update', 'delete', 'show']]);
-
-    // Módulo de mantenimiento de tracking
-    $routes->presenter('tracking', ['controller' => 'TrackingController', 'only' => ['index', 'new', 'show', 'create', 'edit', 'update']]);
-    $routes->get('tracking-pendientes/ruta/(:num)', 'TrackingController::getPendientesPorRuta/$1');
-    $routes->get('tracking-pendientes/todos', 'TrackingController::getTodosPendientes');
-    $routes->get('tracking-pendientes/rutas-con-paquetes/(:any)', 'TrackingController::rutasConPaquetes/$1');
-    $routes->post('tracking/store', 'TrackingController::store');
-    $routes->get('tracking-rendicion/(:num)', 'TrackingRendicionController::index/$1');
-    $routes->post('tracking-rendicion/save', 'TrackingRendicionController::save');
-    $routes->get('tracking-pdf/(:num)', 'TrackingRendicionController::pdf/$1');
-
     // Módulo de mantenimiento de cuentas
     $routes->presenter('accounts', ['controller' => 'AccountController', 'only' => ['index', 'new', 'create', 'edit', 'update']]);
     $routes->post('accounts/delete', 'AccountController::delete');
@@ -190,27 +169,10 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {    // Grupo del Da
     //Rutas para reportería
     $routes->get('reports', 'ReportController::index');
 
-    // Módulo de mantenimiento de ubicaciones externas
-    $routes->get('external-locations', 'ExternalLocations::index');
-    $routes->get('external-locations/create', 'ExternalLocations::create');
-    $routes->post('external-locations/store', 'ExternalLocations::store');
-    $routes->get('external-locations/edit/(:num)', 'ExternalLocations::edit/$1');
-    $routes->post('external-locations/update/(:num)', 'ExternalLocations::update/$1');
-    $routes->get('external-locations/delete/(:num)', 'ExternalLocations::delete/$1');
-    $routes->get('external-locations/get/(:num)', 'ExternalLocations::get/$1');
-    $routes->get('external-locations-list', 'ExternalLocations::listAjax');
-
-    // Rutas para mantenimiento de Solicitudes
-    $routes->get('solicitudes', 'SolicitudReversionController::index');
-    $routes->get('solicitudes',             'SolicitudReversionController::index');
-    $routes->get('solicitudes/(:num)',      'SolicitudReversionController::show/$1');
-    $routes->post('solicitudes/store',      'SolicitudReversionController::store');
-    $routes->post('solicitudes/aprobar',    'SolicitudReversionController::aprobar');
-    $routes->post('solicitudes/denegar',    'SolicitudReversionController::denegar');
-    $routes->get('pagos/detalle-por-paquete/(:num)', 'PaymentController::detallePagoPorPaquete/$1');
-    
     // Rutas para notificaciones
     $routes->get('notifications',                   'NotificationController::index');
-$routes->get('notifications-search',            'NotificationController::searchAjax');
+    $routes->get('notifications-search',            'NotificationController::searchAjax');
     $routes->post('notifications/marcar-leida', 'NotificationController::marcarLeida');
+
+    $routes->get('backups_automaticos/', 'BackupFrameworksController::index');
 });
