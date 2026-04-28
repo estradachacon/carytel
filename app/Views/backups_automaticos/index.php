@@ -191,7 +191,6 @@
                     </tbody>
                 </table>
                 <div id="pagerContainer" class="d-flex mt-3">
-                    <?= $pager->links('default', 'bootstrap_full') ?>
                 </div>
             </div>
         </div>
@@ -248,45 +247,25 @@
         // ================= SELECT2 =================
 
         $('#clienteSelect').select2({
-            language: 'es',
-            placeholder: 'Buscar cliente...',
-            ajax: {
-                url: '<?= base_url("clientes/buscar") ?>',
-                dataType: 'json',
-                delay: 250,
-                data: params => ({
-                    q: params.term
-                }),
-                processResults: data => ({
-                    results: data
-                }),
-                cache: true
-            }
-        });
-
-        $('#sellerSelect').select2({
-            language: 'es',
-            placeholder: 'Buscar vendedor...',
+            placeholder: 'Selecciona un cliente',
+            allowClear: true,
             minimumInputLength: 2,
             ajax: {
-                url: '<?= base_url("sellers/searchAjax") ?>',
+                url: '<?= base_url('clientes/buscar') ?>',
                 dataType: 'json',
                 delay: 250,
-                data: params => ({
-                    q: params.term,
-                    select2: 1
-                }),
-                processResults: data => data
+                processResults: function(data) {
+                    return {
+                        results: data
+                    };
+                },
+                cache: true
             }
         });
 
         // ================= LISTENERS =================
 
-        $('#clienteSelect, #sellerSelect').on('change', cargarFacturas);
-        $('[name="estado"], [name="tipo_dte"]').on('change', cargarFacturas);
-        $('#tipoVentaSelect').on('change', cargarFacturas);
-        $('#numeroFactura').on('input', function() {
-            this.value = this.value.replace(/\D/g, '');
+        $('#clienteSelect').on('change', function() {
             cargarFacturas();
         });
 

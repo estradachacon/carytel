@@ -457,26 +457,6 @@
                         <span class="nav-link-label">Finanzas</span>
                         <div class="sb-sidenav-collapse-arrow"><i class="fa-solid fa-angle-down"></i></div>
                     </a>
-                    <div class="collapse" id="cash" data-bs-parent="#sidenavAccordion">
-                        <nav class="sb-sidenav-menu-nested nav flex-column">
-                            <?php if (tienePermiso('ver_cajas') || tienePermiso('crear_caja') || tienePermiso('ver_historicos_de_caja')): ?>
-                                <a class="nav-link collapsed" href="#"
-                                    data-bs-toggle="collapse" data-bs-target="#subCajas"
-                                    aria-expanded="false" aria-controls="subCajas">
-                                    Cajas <div class="sb-sidenav-collapse-arrow"><i class="fa-solid fa-angle-down"></i></div>
-                                </a>
-                                <div class="collapse" id="subCajas" data-bs-parent="#cash">
-                                    <nav class="sb-sidenav-menu-nested nav flex-column">
-                                        <?php if (tienePermiso('ver_cajas')): ?><a class="nav-link" href="/cashiers">Lista de Cajas</a><?php endif; ?>
-                                        <?php if (tienePermiso('crear_caja')): ?><a class="nav-link" href="/cashiers/new">Creación de caja</a><?php endif; ?>
-                                        <?php if (tienePermiso('ver_historicos_de_caja')): ?><a class="nav-link" href="/cashier/transactions">Movimientos de caja</a><?php endif; ?>
-                                    </nav>
-                                </div>
-                            <?php endif; ?>
-                            <?php if (tienePermiso('ver_transacciones')): ?><a class="nav-link" href="/transactions">Movimientos históricos</a><?php endif; ?>
-                            <?php if (tienePermiso('ver_cuentas')): ?><a class="nav-link" href="/accounts">Cuentas</a><?php endif; ?>
-                        </nav>
-                    </div>
                 <?php endif; ?>
 
                 <!-- BackUps Automaticos -->
@@ -518,26 +498,6 @@
                         <span class="nav-link-label">Ajustes del sistema</span>
                         <div class="sb-sidenav-collapse-arrow"><i class="fa-solid fa-angle-down"></i></div>
                     </a>
-                    <div class="collapse" id="company_settings" data-bs-parent="#sidenavAccordion">
-                        <nav class="sb-sidenav-menu-nested nav flex-column">
-                            <?php if (tienePermiso('ver_usuarios') || tienePermiso('ver_roles')): ?>
-                                <a class="nav-link collapsed" href="#"
-                                    data-bs-toggle="collapse" data-bs-target="#staffs"
-                                    aria-expanded="false" aria-controls="staffs">
-                                    Gestión de usuarios <div class="sb-sidenav-collapse-arrow"><i class="fa-solid fa-angle-down"></i></div>
-                                </a>
-                                <div class="collapse" id="staffs">
-                                    <nav class="sb-sidenav-menu-nested nav flex-column">
-                                        <?php if (tienePermiso('ver_usuarios')): ?><a class="nav-link" href="/users">Lista de usuarios</a><?php endif; ?>
-                                        <?php if (tienePermiso('ver_roles')): ?><a class="nav-link" href="/roles">Roles</a><?php endif; ?>
-                                    </nav>
-                                </div>
-                            <?php endif; ?>
-                            <?php if (tienePermiso('ver_sucursales')): ?><a class="nav-link" href="/branches">Sucursales</a><?php endif; ?>
-                            <?php if (tienePermiso('ajustes_multimedia')): ?><a class="nav-link" href="/content">Multimedia</a><?php endif; ?>
-                            <?php if (tienePermiso('ver_configuracion')): ?><a class="nav-link" href="/settings">Configuración</a><?php endif; ?>
-                        </nav>
-                    </div>
                 <?php endif; ?>
 
             </div>
