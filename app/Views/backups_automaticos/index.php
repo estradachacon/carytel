@@ -1,42 +1,26 @@
 <?= $this->extend('Layouts/mainbody') ?>
 <?= $this->section('content') ?>
 <style>
-    /* Unificar altura Select2 con Bootstrap */
-
     .select2-container .select2-selection--single {
         height: 38px !important;
-        /* altura estándar Bootstrap */
         border: 1px solid #ced4da;
         border-radius: .375rem;
     }
-
     .select2-container--default .select2-selection--single .select2-selection__rendered {
         line-height: 36px !important;
-        /* centra texto */
         padding-left: .75rem;
     }
-
     .select2-container--default .select2-selection--single .select2-selection__arrow {
         height: 36px !important;
     }
-
-    /* focus igual que form-control */
     .select2-container--default.select2-container--focus .select2-selection--single {
         border-color: #86b7fe;
-        box-shadow: 0 0 0 .25rem rgba(13, 110, 253, .25);
+        box-shadow: 0 0 0 .25rem rgba(13,110,253,.25);
     }
-
-    .badge-estado{
+    .badge-estado {
         font-size: 0.75rem;
         padding: 5px 12px;
         border-radius: 10px;
-        font-weight: 500;
-    }
-
-    .badge-estado1{
-        font-size: 0.65rem;
-        padding: 4px 12px;
-        border-radius: 5px;
         font-weight: 500;
     }
 </style>
@@ -44,273 +28,178 @@
 <div class="row">
     <div class="col-md-12">
         <div class="card">
-            <div class="card-header d-flex">
-                <h4 class="header-title">Listado de Respaldos automaticos</h4>
+            <div class="card-header d-flex align-items-center">
+                <h4 class="header-title mb-0">Respaldos automáticos</h4>
             </div>
             <div class="card-body">
+
+                <!-- Filtros -->
                 <form onsubmit="return false" class="mb-3">
                     <div class="row g-2">
-
                         <div class="col-md-4">
                             <small class="text-muted">Cliente</small>
                             <select id="clienteSelect" class="form-control"></select>
                         </div>
                         <div class="col-md-2">
                             <small class="text-muted">Fecha recepción</small>
-                            <input
-                                type="text"
-                                name="fecha"
-                                id="fechaFiltro"
-                                class="form-control"
-                                placeholder="dd/mm/yyyy">
+                            <input type="text" id="fechaFiltro" class="form-control" placeholder="dd/mm/yyyy">
                         </div>
-
                     </div>
                 </form>
-                <table class="table table-striped table-bordered table-hover">
-                    <thead>
-                        <tr>
-                            <th class="text-center">ID</th>
-                            <th class="col-3">Cliente</th>
-                            <th>Fecha/Hora Recepción</th>
-                            <th class="col-1">Tamaño</th>
-                            <th class="col-1">Estado</th>
-                            <th class="col-1">Menú</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (!empty($facturas)): ?>
-                            <?php foreach ($facturas as $factura): ?>
-                                <tr>
-                                    <td><?= esc($factura->id) ?></td>
-                                    <td class="text-center">
-                                        <?= esc(substr($factura->numero_control, -6)) ?>
-                                    </td>
 
-                                    <td>
-                                        <?php
-                                        $siglas = dte_siglas();
-                                        $descripciones = dte_descripciones();
-
-                                        $codigo = $factura->tipo_dte;
-                                        $sigla = $siglas[$codigo] ?? null;
-                                        $descripcion = $sigla ? ($descripciones[$sigla] ?? null) : null;
-                                        ?>
-
-                                        <?php if ($sigla && $descripcion): ?>
-                                            <span class="badge badge-estado1 bg-info text-white">
-                                                <?= esc($sigla) ?>
-                                            </span>
-                                            <br>
-                                            <small class="text-muted">
-                                                <?= esc($descripcion) ?>
-                                            </small>
-                                        <?php else: ?>
-                                            <span class="text-muted">Desconocido</span>
-                                        <?php endif; ?>
-                                    </td>
-
-                                    <td>
-                                        <?= esc($factura->cliente_nombre ?? 'Sin cliente') ?>
-                                        <div class="text-right">
-                                            <small class="text-muted">
-                                                Vendedor: <?= esc($factura->vendedor ?? 'Sin vendedor') ?>
-                                            </small>
-                                        </div>
-                                    </td>
-
-                                    <td class="text-center">
-                                        <?= date('d/m/Y', strtotime($factura->fecha_emision)) ?>
-                                        <br>
-                                        <small class="text-muted">
-                                            <?= date('H:i', strtotime($factura->hora_emision)) ?>
-                                        </small>
-                                    </td>
-
-                                    <td class="text-center">
-                                        <?php
-                                        $condicion = $factura->condicion_operacion ?? 1;
-
-                                        if ($condicion == 1) {
-                                            echo '<span class="badge badge-estado bg-success text-white">Contado</span>';
-                                        } elseif ($condicion == 2) {
-                                            echo '<span class="badge badge-estado bg-warning text-dark">Crédito</span>';
-                                        } else {
-                                            echo '<span class="badge badge-estado bg-secondary text-white">N/D</span>';
-                                        }
-                                        ?>
-                                    </td>
-
-                                    <td class="text-end">
-                                        $ <?= number_format($factura->total_pagar, 2) ?>
-                                    </td>
-
-                                    <td class="text-end">
-                                        $ <?= number_format($factura->saldo, 2) ?>
-                                    </td>
-
-                                    <td class="text-center">
-
-                                        <?php if (($factura->anulada ?? 0) == 1): ?>
-
-                                            <span class="badge badge-estado bg-danger text-white">
-                                                Anulado
-                                            </span>
-
-                                        <?php elseif (($factura->saldo ?? 0) == 0): ?>
-
-                                            <span class="badge bg-info badge-estado text-white">
-                                                <i class="fa-solid fa-check-circle"></i> Pagada
-                                            </span>
-
-                                        <?php else: ?>
-
-                                            <span class="badge bg-warning badge-estado text-dark">
-                                                Activa
-                                            </span>
-
-                                        <?php endif; ?>
-
-                                    </td>
-
-                                    <td class="text-center">
-                                        <a href="<?= base_url('facturas/' . $factura->id) ?>"
-                                            class="btn btn-sm btn-info">
-                                            <i class="fa-solid fa-eye"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php else: ?>
+                <!-- Tabla -->
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-hover align-middle">
+                        <thead class="table-light">
                             <tr>
-                                <td colspan="9" class="text-center">
-                                    No hay facturas registradas
+                                <th class="text-center" style="width:60px">#</th>
+                                <th>Cliente</th>
+                                <th>Sistema / Base de datos</th>
+                                <th>Fecha recepción</th>
+                                <th class="text-center">Tamaño</th>
+                                <th class="text-center">Estado</th>
+                                <th class="text-center" style="width:60px">Menú</th>
+                            </tr>
+                        </thead>
+                        <tbody id="backupsTbody">
+                            <tr>
+                                <td colspan="7" class="text-center text-muted py-4">
+                                    <span class="spinner-border spinner-border-sm me-2"></span>
+                                    Cargando...
                                 </td>
                             </tr>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-                <div id="pagerContainer" class="d-flex mt-3">
+                        </tbody>
+                    </table>
                 </div>
+
+                <div id="pagerContainer" class="d-flex justify-content-center mt-3"></div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Modal detalle -->
+<div class="modal fade" id="detalleModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fa fa-database me-2"></i>Detalle del backup</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="detalleBody">
+                <div class="text-center"><span class="spinner-border"></span></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
-    $(document).ready(function() {
-        $('form').on('submit', function(e) {
-            e.preventDefault();
-        });
-        $('input').on('keydown', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-            }
-        });
+$(document).ready(function () {
 
-        function cargarFacturas() {
+    // ── Select2 clientes ─────────────────────────────────────────────
+    $('#clienteSelect').select2({
+        placeholder: 'Todos los clientes',
+        allowClear: true,
+        minimumInputLength: 2,
+        ajax: {
+            url: '<?= base_url('clientes/buscar') ?>',
+            dataType: 'json',
+            delay: 250,
+            processResults: data => ({ results: data }),
+            cache: true
+        }
+    });
 
-            let clienteId = $('#clienteSelect').val();
-            let sellerId = $('#sellerSelect').val();
-            let estado = $('[name="estado"]').val();
-            let tipo_dte = $('[name="tipo_dte"]').val();
-            let fecha = $('#fechaFiltro').val();
-            let tipoVenta = $('#tipoVentaSelect').val();
-            let numeroFactura = $('#numeroFactura').val();
+    $('#clienteSelect').on('change', cargar);
 
-            if (fecha && fecha.length === 10) {
-                let p = fecha.split('/');
-                fecha = `${p[2]}-${p[1]}-${p[0]}`;
-            }
+    // ── Máscara de fecha ─────────────────────────────────────────────
+    document.getElementById('fechaFiltro').addEventListener('input', function () {
+        let v = this.value.replace(/\D/g, '');
+        if (v.length > 8) v = v.substring(0, 8);
+        if (v.length >= 5)      this.value = v.substring(0,2) + '/' + v.substring(2,4) + '/' + v.substring(4);
+        else if (v.length >= 3) this.value = v.substring(0,2) + '/' + v.substring(2);
+        else                    this.value = v;
 
-            const params = new URLSearchParams({
-                cliente_id: clienteId || '',
-                seller_id: sellerId || '',
-                estado: estado || '',
-                tipo_dte: tipo_dte || '',
-                fecha: fecha || '',
-                tipo_venta: tipoVenta || '',
-                numero_factura: numeroFactura || ''
-            });
+        if (this.value === '' || this.value.length === 10) cargar();
+    });
 
-            fetch('<?= base_url('facturas') ?>?' + params.toString(), {
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                })
-                .then(r => r.json())
-                .then(data => {
-                    $('tbody').html(data.tbody);
-                    $('#pagerContainer').html(data.pager);
-                });
+    // ── Carga principal ──────────────────────────────────────────────
+    function cargar(url) {
+        let clienteId = $('#clienteSelect').val() || '';
+        let fecha     = document.getElementById('fechaFiltro').value;
+
+        if (fecha && fecha.length === 10) {
+            const p = fecha.split('/');
+            fecha   = `${p[2]}-${p[1]}-${p[0]}`;
+        } else {
+            fecha = '';
         }
 
-        // ================= SELECT2 =================
+        const base    = typeof url === 'string' ? url : '<?= base_url('backups_automaticos/lista') ?>';
+        const params  = new URLSearchParams({ cliente_id: clienteId, fecha });
 
-        $('#clienteSelect').select2({
-            placeholder: 'Selecciona un cliente',
-            allowClear: true,
-            minimumInputLength: 2,
-            ajax: {
-                url: '<?= base_url('clientes/buscar') ?>',
-                dataType: 'json',
-                delay: 250,
-                processResults: function(data) {
-                    return {
-                        results: data
-                    };
-                },
-                cache: true
-            }
+        $('#backupsTbody').html(
+            '<tr><td colspan="7" class="text-center text-muted py-3">' +
+            '<span class="spinner-border spinner-border-sm me-2"></span>Cargando...</td></tr>'
+        );
+
+        fetch(base + '?' + params.toString(), {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(r => r.json())
+        .then(data => {
+            $('#backupsTbody').html(data.tbody);
+            $('#pagerContainer').html(data.pager);
         });
+    }
 
-        // ================= LISTENERS =================
-
-        $('#clienteSelect').on('change', function() {
-            cargarFacturas();
-        });
-
-        // ================= FECHA MASK =================
-
-        const fechaInput = document.getElementById('fechaFiltro');
-
-        fechaInput.addEventListener('input', function() {
-
-            let v = this.value.replace(/\D/g, '');
-
-            if (v.length > 8) v = v.substring(0, 8);
-
-            if (v.length >= 5) {
-                this.value = v.substring(0, 2) + '/' + v.substring(2, 4) + '/' + v.substring(4);
-            } else if (v.length >= 3) {
-                this.value = v.substring(0, 2) + '/' + v.substring(2);
-            } else {
-                this.value = v;
-            }
-
-            if (this.value === '' || this.value.length === 10) {
-                cargarFacturas();
-            }
-
-        });
-
-    });
-    $(document).on('click', '#pagerContainer a', function(e) {
-
+    // ── Paginador ────────────────────────────────────────────────────
+    $(document).on('click', '#pagerContainer a', function (e) {
         e.preventDefault();
-
-        const url = $(this).attr('href');
-
-        fetch(url, {
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            })
-            .then(r => r.json())
-            .then(data => {
-                $('tbody').html(data.tbody);
-                $('#pagerContainer').html(data.pager);
-            });
-
+        cargar($(this).attr('href'));
     });
+
+    // ── Modal detalle ────────────────────────────────────────────────
+    const detalleModal = new bootstrap.Modal(document.getElementById('detalleModal'));
+
+    $(document).on('click', '.btn-detalle-backup', function () {
+        const id = $(this).data('id');
+        $('#detalleBody').html('<div class="text-center"><span class="spinner-border"></span></div>');
+        detalleModal.show();
+
+        fetch('<?= base_url('backups_automaticos/detalle/') ?>' + id, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(r => r.json())
+        .then(b => {
+            const peso = b.peso ? formatBytes(b.peso) : '—';
+            $('#detalleBody').html(`
+                <table class="table table-sm mb-0">
+                    <tr><th>ID</th><td>#${b.id}</td></tr>
+                    <tr><th>Archivo</th><td><code style="font-size:.8rem">${b.archivo}</td></tr>
+                    <tr><th>Sistema</th><td>${b.origen ?? '—'}</td></tr>
+                    <tr><th>Base de datos</th><td>${b.db_nombre ?? '—'}</td></tr>
+                    <tr><th>Tamaño</th><td>${peso}</td></tr>
+                    <tr><th>IP origen</th><td>${b.ip ?? '—'}</td></tr>
+                    <tr><th>Fecha</th><td>${b.fecha}</td></tr>
+                    <tr><th>Notas</th><td>${b.notas ?? '—'}</td></tr>
+                    <tr><th>Hash</th><td><small class="text-muted">${b.hash ?? '—'}</small></td></tr>
+                </table>
+            `);
+        });
+    });
+
+    function formatBytes(bytes) {
+        if (bytes < 1024)        return bytes + ' B';
+        if (bytes < 1048576)     return (bytes / 1024).toFixed(1) + ' KB';
+        return (bytes / 1048576).toFixed(2) + ' MB';
+    }
+
+    // Carga inicial
+    cargar();
+});
 </script>
 <?= $this->endSection() ?>

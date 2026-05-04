@@ -20,36 +20,45 @@ class BackupFrameworkModel extends Model
         'fecha',
         'hash',
         'ip',
+        'origen',
+        'db_nombre',
+        'notas',
+        'estado',
         'created_at',
-        'updated_at'
+        'updated_at',
     ];
 
     protected $useTimestamps = true;
-
     protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';
 
-    // 🔹 Obtener backups con nombre de cliente
-    public function getWithCliente()
+    public function getWithCliente(int $clienteId = null, string $fecha = null, int $perPage = 20)
     {
-        return $this->select('backups.*, clientes_frameworks.nombre as cliente')
-            ->join('clientes_frameworks', 'clientes_frameworks.id = backups.cliente_id')
-            ->orderBy('fecha', 'DESC')
-            ->findAll();
+        $this->select('backups_frameworks.*, clientes_frameworks.nombre as cliente_nombre')
+             ->join('clientes_frameworks', 'clientes_frameworks.id = backups_frameworks.cliente_id')
+             ->orderBy('backups_frameworks.fecha', 'DESC');
+
+        if ($clienteId) {
+            $this->where('backups_frameworks.cliente_id', $clienteId);
+        }
+
+        if ($fecha) {
+            $this->where('DATE(backups_frameworks.fecha)', $fecha);
+        }
+
+        return $this->paginate($perPage);
     }
 
-    // 🔹 Obtener últimos backups por cliente (útil para dashboard)
     public function getUltimosPorCliente()
     {
-        return $this->select('backups.*, clientes_frameworks.nombre as cliente')
-            ->join('clientes_frameworks', 'clientes_frameworks.id = backups.cliente_id')
-            ->orderBy('fecha', 'DESC')
-            ->groupBy('cliente_id')
+        return $this->select('backups_frameworks.*, clientes_frameworks.nombre as cliente_nombre')
+            ->join('clientes_frameworks', 'clientes_frameworks.id = backups_frameworks.cliente_id')
+            ->orderBy('backups_frameworks.fecha', 'DESC')
+            ->groupBy('backups_frameworks.cliente_id')
             ->findAll();
     }
 
-    // 🔹 Verificar si ya existe un backup por hash (evitar duplicados)
-    public function existeHash(string $hash)
+    public function existeHash(string $hash): bool
     {
         return $this->where('hash', $hash)->first() !== null;
     }

@@ -6,7 +6,6 @@ use App\Models\ClienteFrameworkModel;
 
 class ClientesController extends BaseController
 {
-    // 📋 LISTADO
     public function index()
     {
         $model = new ClienteFrameworkModel();
@@ -15,30 +14,26 @@ class ClientesController extends BaseController
         return view('clientes/index', $data);
     }
 
-    // ➕ FORM NUEVO
     public function new()
     {
         return view('clientes/new');
     }
 
-    // 💾 GUARDAR
     public function create()
     {
         $model = new ClienteFrameworkModel();
 
         $model->save([
-            'nombre'    => $this->request->getPost('nombre'),
-            'identificador'  => $this->request->getPost('identificador'),
+            'nombre'       => $this->request->getPost('nombre'),
+            'identificador' => $this->request->getPost('identificador'),
         ]);
 
         return redirect()->to('/clientes');
     }
 
-    // ✏️ EDITAR
-    public function edit($id)
+    public function edit(int $id)
     {
         $model = new ClienteFrameworkModel();
-
         $data['cliente'] = $model->find($id);
 
         if (!$data['cliente']) {
@@ -48,52 +43,64 @@ class ClientesController extends BaseController
         return view('clientes/edit', $data);
     }
 
-    // 🔄 ACTUALIZAR
-    public function update($id)
+    public function update(int $id)
     {
         $model = new ClienteFrameworkModel();
 
         $model->update($id, [
-            'nombre'    => $this->request->getPost('nombre'),
-            'identificador'  => $this->request->getPost('identificador'),
+            'nombre'       => $this->request->getPost('nombre'),
+            'identificador' => $this->request->getPost('identificador'),
         ]);
 
         return redirect()->to('/clientes');
     }
 
-    // 🗑️ ELIMINAR (soft delete)
-    public function delete($id)
+    public function delete(int $id)
     {
         $model = new ClienteFrameworkModel();
-
         $model->delete($id);
 
         return redirect()->to('/clientes');
     }
 
-    // 🔍 BUSCAR (AJAX)
     public function buscar()
     {
-        $term = $this->request->getGet('term');
-
+        $term  = $this->request->getGet('term');
         $model = new ClienteFrameworkModel();
 
         $clientes = $model
             ->groupStart()
-            ->like('nombre', $term)
-            ->orLike('identificador', $term)
+                ->like('nombre', $term)
+                ->orLike('identificador', $term)
             ->groupEnd()
             ->findAll(10);
 
         $data = [];
-
         foreach ($clientes as $c) {
             $data[] = [
                 'id'   => $c->id,
-                'text' => $c->nombre . ($c->identificador ? ' - ' . $c->identificador : '')
+                'text' => $c->nombre . ($c->identificador ? ' - ' . $c->identificador : ''),
             ];
         }
 
         return $this->response->setJSON($data);
+    }
+
+    // Genera (o regenera) el api_key del cliente y lo devuelve como JSON
+    public function generarApiKey($id)
+    {
+        $model   = new ClienteFrameworkModel();
+        $cliente = $model->find($id);
+
+        if (!$cliente) {
+            return $this->response->setStatusCode(404)
+                ->setJSON(['ok' => false, 'error' => 'Cliente no encontrado']);
+        }
+
+        $apiKey = bin2hex(random_bytes(32)); // 64 chars hex
+
+        $model->update($id, ['api_key' => $apiKey]);
+
+        return $this->response->setJSON(['ok' => true, 'api_key' => $apiKey]);
     }
 }

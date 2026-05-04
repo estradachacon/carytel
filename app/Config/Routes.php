@@ -14,6 +14,9 @@ $routes->post('/login', 'AuthController::login');
 $routes->get('/logout', 'AuthController::logout');
 $routes->get('api/backup/estrada', 'Api\BackupController::index');
 
+// API recepción de backups desde frameworks cliente (sin auth, autenticada por api_key)
+$routes->post('api/frameworks/backup', 'Api\FrameworkBackupController::recibir');
+
 // 🔐 Recuperación de contraseña (SIN AUTH)
 $routes->group('auth', function ($routes) {
     $routes->post('send-reset-code', 'AuthController::sendResetCode');
@@ -175,4 +178,10 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {    // Grupo del Da
     $routes->post('notifications/marcar-leida', 'NotificationController::marcarLeida');
 
     $routes->get('backups_automaticos/', 'BackupFrameworksController::index');
+    $routes->get('backups_automaticos/lista', 'BackupFrameworksController::lista');
+    $routes->get('backups_automaticos/detalle/(:num)', 'BackupFrameworksController::detalle/$1');
+    $routes->get('backups_automaticos/descargar/(:num)', 'BackupFrameworksController::descargar/$1');
+
+    // Generar api_key para un cliente
+    $routes->post('clientes/generar-api-key/(:num)', 'ClientesController::generarApiKey/$1');
 });

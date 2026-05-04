@@ -16,18 +16,22 @@ class ClienteFrameworkModel extends Model
     protected $allowedFields = [
         'nombre',
         'identificador',
+        'api_key',
         'created_at',
-        'updated_at'
+        'updated_at',
     ];
 
     protected $useTimestamps = true;
-
     protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';
 
-    // 🔹 Buscar cliente por identificador (para la API)
     public function getByIdentificador(string $identificador)
     {
         return $this->where('identificador', $identificador)->first();
+    }
+
+    public function getByApiKey(string $apiKey)
+    {
+        return $this->where('api_key', $apiKey)->first();
     }
 }
